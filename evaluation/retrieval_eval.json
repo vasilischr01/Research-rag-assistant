@@ -1,0 +1,18 @@
+[
+  {
+    "query": "What methods were used to forecast migraine?",
+    "relevant_pages": [2, 3, 4]
+  },
+  {
+    "query": "What data sources were used in the migraine forecasting study?",
+    "relevant_pages": [2, 3]
+  },
+  {
+    "query": "What limitations did the authors report?",
+    "relevant_pages": [8, 9]
+  },
+  {
+    "query": "How well did the forecasting models perform?",
+    "relevant_pages": [5, 6, 7]
+  }
+]

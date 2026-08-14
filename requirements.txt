@@ -1,0 +1,11 @@
+fastapi>=0.116,<1
+uvicorn[standard]>=0.35,<1
+pymupdf>=1.26,<2
+sentence-transformers>=5.0,<6
+faiss-cpu>=1.11,<2
+numpy>=2.0,<3
+pydantic>=2.10,<3
+python-multipart>=0.0.20,<1
+httpx>=0.28,<1
+python-dotenv>=1.1,<2
+pytest>=8,<9
