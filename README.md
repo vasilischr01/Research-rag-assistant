@@ -1,10 +1,10 @@
 # Research RAG Assistant
 
-A local Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis, semantic search, evidence reranking, citation-aware retrieval, and multi-document comparison.
+A local-first Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis, semantic search, evidence reranking, citation-aware retrieval, retrieval evaluation, and multi-document comparison.
 
-The project provides an end-to-end pipeline for uploading research papers, extracting and chunking their content, generating semantic embeddings, retrieving relevant evidence, reranking retrieved passages with a cross-encoder, and exposing the workflow through a FastAPI REST API.
+The project implements an end-to-end document retrieval pipeline that can ingest research papers, extract and chunk their content, generate semantic embeddings, retrieve relevant evidence with FAISS, rerank candidate passages using a cross-encoder, and expose the workflow through a FastAPI REST API.
 
-It also includes a retrieval evaluation pipeline using **Recall@k** and **Mean Reciprocal Rank (MRR)**.
+The system also includes a dedicated retrieval benchmarking pipeline using **Recall@k**, **Mean Reciprocal Rank (MRR)**, and latency measurements.
 
 ---
 
@@ -12,22 +12,28 @@ It also includes a retrieval evaluation pipeline using **Recall@k** and **Mean R
 
 Research RAG Assistant is designed to support structured exploration of scientific and technical PDF documents.
 
-Instead of relying only on keyword matching, the system represents text chunks as dense semantic embeddings and retrieves evidence according to similarity with the user's query.
+Instead of relying on keyword matching, the system represents document chunks as dense semantic embeddings and retrieves evidence according to semantic similarity with the user's query.
 
 A second-stage **cross-encoder reranker** evaluates the retrieved candidates more precisely and reorders them before they are returned.
 
 The system supports:
 
 - PDF ingestion
+- Page-aware text chunking
 - Semantic document search
+- Dense vector retrieval with FAISS
 - Cross-encoder evidence reranking
 - Citation-aware retrieval
 - Question answering over indexed documents
 - Multi-document comparison
-- Retrieval quality evaluation
-- Local vector indexing
+- Retrieval quality benchmarking
+- Latency evaluation
+- Persistent local vector indexing
 - FastAPI REST API
 - Interactive Swagger/OpenAPI documentation
+- Automated testing
+- Docker support
+- GitHub Actions CI
 
 No uploaded research papers are distributed with this repository.
 
@@ -44,16 +50,19 @@ PDF Document
 PDF Text Extraction
      |
      v
-Page-aware Chunking
+Page-Aware Chunking
      |
      v
 Sentence Transformer Embeddings
      |
      v
-Vector Index
+FAISS Vector Index
      |
      v
 Dense Semantic Retrieval
+     |
+     v
+Candidate Passages
      |
      v
 Cross-Encoder Reranking
@@ -61,16 +70,16 @@ Cross-Encoder Reranking
      v
 Ranked Evidence
      |
-     +--------------------+
-     |                    |
-     v                    v
-Question Answering    Multi-document Comparison
-     |                    |
-     v                    v
-Citations            Per-document Evidence
+     +--------------------------+
+     |                          |
+     v                          v
+Question Answering      Multi-Document Comparison
+     |                          |
+     v                          v
+Citation-Aware Output   Per-Document Evidence
 ```
 
-At ingestion time:
+### Ingestion Pipeline
 
 ```text
 PDF
@@ -80,13 +89,13 @@ PDF
  -> store embeddings and metadata
 ```
 
-At query time:
+### Query Pipeline
 
 ```text
 Question
  -> embed query
- -> retrieve candidate chunks
- -> rerank candidates
+ -> retrieve candidate chunks with FAISS
+ -> rerank candidates with CrossEncoder
  -> return highest-ranked evidence
 ```
 
@@ -104,7 +113,7 @@ The ingestion pipeline:
 2. Extracts text page by page
 3. Splits the document into overlapping chunks
 4. Generates semantic embeddings for every chunk
-5. Adds the chunks and metadata to the local vector index
+5. Adds embeddings and metadata to the persistent FAISS index
 
 Stored metadata includes:
 
@@ -119,9 +128,9 @@ Stored metadata includes:
 
 The `/search` endpoint performs semantic retrieval over indexed document chunks.
 
-Instead of matching only exact words, the query is embedded into the same vector space as the document chunks.
+Instead of matching exact keywords, the query is embedded into the same vector space as the document chunks.
 
-The system first retrieves a larger candidate set and then reranks those candidates.
+The system retrieves a larger candidate pool and subsequently reranks those candidates using a cross-encoder.
 
 Example request:
 
@@ -132,24 +141,28 @@ Example request:
 }
 ```
 
-Typical result fields include:
+Typical result:
 
 ```json
 {
-  "chunk_id": "paper.pdf:p2:c2",
+  "chunk_id": "paper.pdf:p4:c2",
   "document": "paper.pdf",
-  "page": 2,
+  "page": 4,
   "text": "...",
   "score": 0.72,
   "reranker_score": 3.91
 }
 ```
 
+The `score` field represents the first-stage dense retrieval similarity score.
+
+The `reranker_score` represents the relevance score assigned by the second-stage cross-encoder.
+
 ---
 
 ## Cross-Encoder Reranking
 
-Initial semantic retrieval is efficient because it compares vector embeddings.
+Dense semantic retrieval is efficient because queries and document chunks are represented as embeddings and compared in vector space.
 
 However, embedding similarity does not always produce the optimal ordering of candidate passages.
 
@@ -179,7 +192,13 @@ The cross-encoder jointly evaluates:
 
 and produces a relevance score for each candidate.
 
-This improves evidence ordering before results are returned.
+The current reranker uses:
+
+```text
+cross-encoder/ms-marco-MiniLM-L6-v2
+```
+
+Candidate passages are reordered according to their cross-encoder relevance scores before the final top-k results are returned.
 
 ---
 
@@ -196,24 +215,35 @@ Example:
 }
 ```
 
-The system returns an answer together with supporting citations.
+The system returns an answer together with supporting evidence.
+
+Example structure:
 
 ```json
 {
   "answer": "...",
-  "citations": [...]
+  "citations": [
+    {
+      "document": "paper.pdf",
+      "page": 9,
+      "chunk_id": "paper.pdf:p9:c1",
+      "text": "...",
+      "score": 0.68,
+      "reranker_score": 4.12
+    }
+  ]
 }
 ```
 
-When no external LLM is configured, the system remains usable as a retrieval-oriented assistant based on evidence extracted from the indexed documents.
+When no external LLM is configured, the application remains usable as a retrieval-oriented research assistant based on evidence extracted from indexed documents.
 
-This keeps the core retrieval pipeline local and avoids requiring a paid external API.
+This allows the core retrieval pipeline to operate locally without requiring a paid external API.
 
 ---
 
-## Citations
+## Citations and Evidence Provenance
 
-Retrieved evidence preserves document provenance.
+Retrieved evidence preserves its source metadata.
 
 Citation information includes:
 
@@ -221,22 +251,22 @@ Citation information includes:
 - Page
 - Chunk ID
 - Retrieved text
-- Retrieval score
+- Dense retrieval score
 - Reranker score where applicable
 
 Human-readable citations can be represented as:
 
 ```text
-[paper.pdf, p. 2]
+[paper.pdf, p. 4]
 ```
 
-This makes it possible to trace retrieved evidence back to the original source document.
+This allows retrieved evidence to be traced back to its original source document.
 
 ---
 
 ## Multi-Document Comparison
 
-The `/compare` endpoint allows the same question to be evaluated across multiple indexed documents.
+The `/compare` endpoint allows the same research question to be evaluated across multiple indexed documents.
 
 Example request:
 
@@ -303,13 +333,13 @@ This functionality can support:
 
 ## Retrieval Evaluation
 
-The project contains a dedicated retrieval evaluation module.
+The project includes a dedicated retrieval evaluation pipeline.
 
-The retrieval system is evaluated using:
+Evaluation focuses on whether relevant source pages appear near the top of the retrieved ranking.
 
 ### Recall@k
 
-Recall@k measures how many relevant evidence chunks appear in the first `k` retrieved results.
+Recall@k measures how much of the relevant evidence is retrieved within the first `k` results.
 
 Examples:
 
@@ -318,7 +348,7 @@ Recall@3
 Recall@5
 ```
 
-Higher values indicate that relevant evidence is more consistently retrieved near the top of the ranking.
+Higher values indicate that relevant evidence is more consistently present near the top of the ranking.
 
 ### Mean Reciprocal Rank
 
@@ -330,48 +360,86 @@ For one query:
 Reciprocal Rank = 1 / rank_of_first_relevant_result
 ```
 
-The final MRR is the average reciprocal rank across all evaluation queries.
+MRR is the average reciprocal rank across all evaluation queries.
 
-An MRR closer to `1.0` indicates that relevant evidence tends to appear very high in the ranking.
+An MRR closer to `1.0` indicates that relevant evidence tends to appear near the beginning of the ranking.
 
 ---
 
-## Example Retrieval Evaluation
+## Retrieval Benchmark
 
-A small evaluation set of four research questions was used during development.
+Retrieval quality was evaluated on **12 manually curated research questions** with page-level relevance annotations.
 
-Example result after introducing reranking:
-
-```text
-Queries:        4
-Mean Recall@3:  0.4166
-Mean Recall@5:  0.4166
-MRR:            0.75
-```
-
-During development, MRR increased from approximately:
+The benchmark compares:
 
 ```text
-0.58 -> 0.75
+Dense FAISS Retrieval
 ```
 
-after introducing the second-stage reranking pipeline on this evaluation set.
+against:
 
-Because the evaluation dataset is intentionally small, these values should be interpreted as development diagnostics rather than as a large-scale benchmark.
+```text
+Dense FAISS Retrieval
+        +
+Cross-Encoder Reranking
+```
 
-Evaluation code:
+The same dense candidate pool is used for reranking, allowing the quality contribution of the second-stage model to be measured directly.
+
+### Benchmark Results
+
+| Retrieval Strategy | Recall@3 | Recall@5 | MRR | Avg. Query Latency |
+|---|---:|---:|---:|---:|
+| Dense Retrieval | 0.708 | 0.792 | 0.597 | 397 ms |
+| Dense + Cross-Encoder Reranking | 0.708 | **0.875** | **0.736** | 2202 ms |
+
+Cross-encoder reranking produced:
+
+- **23.3% improvement in MRR**
+- **10.5% improvement in Recall@5**
+- No change in Recall@3
+
+The results demonstrate that second-stage reranking substantially improves the ordering of relevant evidence and increases retrieval coverage within the top five results.
+
+The improvement comes with higher inference latency, exposing an explicit **retrieval-quality vs latency trade-off**.
+
+### Evaluation Configuration
+
+- Evaluation queries: **12**
+- Dense candidate pool: **20 chunks**
+- Metrics:
+  - Recall@3
+  - Recall@5
+  - Mean Reciprocal Rank
+- Dense retrieval:
+  - Sentence-transformer embeddings
+  - FAISS inner-product search
+- Reranker:
+  - `cross-encoder/ms-marco-MiniLM-L6-v2`
+- Benchmark includes:
+  - Dense retrieval latency
+  - Cross-encoder reranking latency
+  - End-to-end retrieval latency
+
+Evaluation implementation:
 
 ```text
 src/evaluation/retrieval.py
 ```
 
-Example evaluation output:
+Evaluation dataset:
 
 ```text
 evaluation/retrieval_eval.json
 ```
 
-Run the evaluation with:
+Generated benchmark:
+
+```text
+evaluation/retrieval_benchmark.json
+```
+
+Run the benchmark with:
 
 ```bash
 python -m src.evaluation.retrieval
@@ -427,7 +495,7 @@ Example response:
 POST /search
 ```
 
-Performs semantic retrieval and reranking.
+Performs dense semantic retrieval followed by cross-encoder reranking.
 
 Example:
 
@@ -484,7 +552,7 @@ Example:
 
 ## Interactive API Documentation
 
-FastAPI automatically provides Swagger documentation.
+FastAPI automatically provides Swagger/OpenAPI documentation.
 
 After starting the API, open:
 
@@ -562,7 +630,8 @@ research-rag-assistant/
 |       `-- .gitkeep
 |
 |-- evaluation/
-|   `-- retrieval_eval.json
+|   |-- retrieval_eval.json
+|   `-- retrieval_benchmark.json
 |
 |-- src/
 |   |-- api/
@@ -663,6 +732,24 @@ http://127.0.0.1:8000/docs
 
 ---
 
+## Running the Retrieval Benchmark
+
+Make sure the required documents have already been ingested into the vector store.
+
+Run:
+
+```bash
+python -m src.evaluation.retrieval
+```
+
+The benchmark report is written to:
+
+```text
+evaluation/retrieval_benchmark.json
+```
+
+---
+
 ## Running Tests
 
 Run the complete test suite with:
@@ -703,7 +790,7 @@ data/uploads/
 data/indexes/
 ```
 
-Only `.gitkeep` files are tracked so the directory structure remains available after cloning.
+Only `.gitkeep` files are tracked so that the directory structure remains available after cloning.
 
 To use the project, upload your own PDF documents through:
 
@@ -719,7 +806,7 @@ This keeps user documents and generated indexes local and prevents research pape
 
 Environment-specific configuration can be stored in a local `.env` file.
 
-An example configuration file is provided as:
+An example configuration file is provided:
 
 ```text
 .env.example
@@ -738,31 +825,62 @@ The core retrieval pipeline operates locally.
 This includes:
 
 - PDF extraction
-- Chunking
+- Page-aware chunking
 - Embedding generation
 - Vector indexing
 - Semantic retrieval
 - Cross-encoder reranking
 - Multi-document evidence comparison
 - Retrieval evaluation
+- Benchmark generation
 
 This allows the application to be developed and tested without requiring a paid external LLM API.
 
-A local or external language model can be added later as an optional generation layer without redesigning the retrieval architecture.
+A local or external language model can be added as an optional generation layer without redesigning the retrieval architecture.
+
+---
+
+## Engineering Decisions
+
+### Two-Stage Retrieval
+
+The system deliberately separates efficient first-stage dense retrieval from more computationally expensive second-stage reranking.
+
+This enables the retrieval pipeline to balance:
+
+- Retrieval coverage
+- Ranking quality
+- Computational cost
+- Query latency
+
+The benchmark quantifies this trade-off instead of assuming that reranking is always beneficial without cost.
+
+### Persistent Vector Index
+
+FAISS embeddings and chunk metadata are persisted locally, allowing indexed documents to remain available between application restarts.
+
+### Page-Level Provenance
+
+Every chunk retains its source document and page information so that retrieved evidence can be traced back to the original PDF.
+
+### Local-First Execution
+
+Core retrieval functionality does not depend on external hosted APIs, making the system easier to reproduce and suitable for private or sensitive document workflows.
 
 ---
 
 ## Limitations
 
-The current implementation has several intentional limitations:
+The current implementation has several limitations:
 
-- The retrieval benchmark currently contains only a small number of manually defined evaluation queries.
-- Multi-document summaries are extractive rather than fully generative when no LLM is configured.
+- The retrieval benchmark currently contains **12 manually curated evaluation queries**, which provides useful development-level comparison but is not intended to represent a large-scale information retrieval benchmark.
+- Evaluation currently focuses primarily on retrieval quality rather than full end-to-end answer correctness.
+- Multi-document summaries are extractive when no LLM is configured.
 - PDF parsing quality depends on the structure and quality of the source PDF.
 - Scanned image-only PDFs may require OCR.
 - The current vector index is designed primarily for local development rather than distributed large-scale retrieval.
-- Evaluation currently focuses primarily on retrieval quality rather than full end-to-end answer correctness.
-- No external LLM is required by the core system.
+- Cross-encoder reranking improves ranking quality but introduces significant additional inference latency.
+- The current benchmark uses page-level relevance annotations rather than fine-grained chunk-level human relevance judgments.
 
 ---
 
@@ -770,39 +888,55 @@ The current implementation has several intentional limitations:
 
 Potential extensions include:
 
-- Local LLM integration
-- Optional external LLM integration
-- Answer-generation evaluation
-- Faithfulness and groundedness evaluation
-- Larger retrieval benchmark
+- Larger and more diverse retrieval benchmark
+- Candidate-pool size ablation experiments
 - Hybrid lexical and dense retrieval
+- BM25 baseline
 - Query rewriting
 - Metadata filtering
 - Document-level ranking
-- More advanced citation verification
+- Answer-generation evaluation
+- Faithfulness evaluation
+- Groundedness evaluation
+- Automated citation verification
+- Local LLM integration
+- Optional external LLM integration
 - Persistent database-backed metadata storage
 - Web frontend
 - Streaming answers
 - Docker Compose deployment
 - GPU acceleration where available
+- Prometheus metrics
+- Retrieval latency monitoring
+- Automated benchmark regression testing
 
 ---
 
 ## Why This Project
 
-This project explores the engineering components required for a practical RAG system rather than treating RAG as only an LLM prompting problem.
+This project explores the engineering components required for a practical Retrieval-Augmented Generation system rather than treating RAG as only an LLM prompting problem.
 
 The implementation focuses on:
 
+- Semantic retrieval
 - Retrieval quality
 - Evidence provenance
-- Reranking
-- Evaluation
+- Neural reranking
+- Quantitative evaluation
+- Quality-latency trade-offs
 - API design
 - Reproducibility
+- Local-first execution
 - Multi-document research workflows
 
-The architecture can serve as a foundation for applications involving scientific papers, technical documentation, reports, and other document-heavy knowledge bases.
+The architecture can serve as a foundation for applications involving:
+
+- Scientific papers
+- Technical documentation
+- Internal knowledge bases
+- Engineering reports
+- Research literature
+- Other document-heavy information systems
 
 ---
 
@@ -810,4 +944,4 @@ The architecture can serve as a foundation for applications involving scientific
 
 This project is licensed under the MIT License.
 
-See the `LICENSE` file for details.
+See the `LICENSE` file for details. 
