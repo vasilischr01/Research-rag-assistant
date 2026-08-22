@@ -1,53 +1,68 @@
 # Research RAG Assistant
+
 [![CI](https://github.com/vasilischr01/Research-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/vasilischr01/Research-rag-assistant/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.11-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-A local-first Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis, semantic retrieval, neural reranking, citation-aware question answering, multi-document comparison, and quantitative retrieval evaluation.
+A local-first Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis with **dense retrieval, BM25 lexical retrieval, hybrid Reciprocal Rank Fusion (RRF), optional cross-encoder reranking, citation-aware question answering, multi-document comparison, and quantitative retrieval evaluation**.
 
-The project implements an end-to-end document retrieval pipeline that can ingest research papers, extract and chunk their content, generate normalized semantic embeddings, retrieve relevant evidence with FAISS, rerank candidate passages using a cross-encoder, and expose the complete workflow through a FastAPI REST API.
+The system implements an end-to-end document retrieval pipeline that can ingest research papers, extract and chunk their content, generate normalized semantic embeddings, persist them in FAISS, build a BM25 lexical index, combine dense and lexical rankings through RRF, optionally rerank candidate passages with a cross-encoder, and expose the complete workflow through a FastAPI REST API.
 
-Beyond basic RAG functionality, the project includes retrieval benchmarking, candidate-pool ablation experiments, latency measurements, configurable retrieval modes, automated tests, Docker support, and GitHub Actions CI.
+The default production retrieval strategy is **Hybrid RRF**, selected empirically from a five-way retrieval benchmark rather than chosen by assumption.
 
 ## Benchmark Highlights
 
-- **+23.3% MRR** with cross-encoder reranking
-- **+10.5% Recall@5** over dense retrieval
-- **0.875 Recall@5** in the quality-oriented configuration
-- **256 ms median latency** in the fast candidate-pool configuration
-- **3 configurable retrieval modes:** `fast`, `balanced`, `quality`
-- **11 automated tests** with GitHub Actions CI
+- **0.8055 MRR** with Hybrid Dense + BM25 + RRF — highest MRR in the current evaluation
+- **0.9583 Recall@5** with BM25 — highest top-five retrieval coverage
+- **+34.9% MRR** for Hybrid RRF relative to the dense FAISS baseline
+- **+10.5% Recall@5** for Hybrid RRF relative to the dense baseline
+- Hybrid RRF achieved higher MRR than Hybrid + Cross-Encoder reranking
+- **5 selectable retrieval strategies**
+- **3 configurable candidate-pool modes**
+- **20 automated tests** with GitHub Actions CI
+- Evaluation uses **document + page relevance annotations** to avoid page-number collisions across PDFs
 
 ---
 
 ## Overview
 
-Research RAG Assistant is designed to support structured exploration of scientific and technical PDF documents.
+Research RAG Assistant is designed for structured exploration of scientific and technical PDF documents.
 
-Instead of relying only on keyword matching, the system represents document chunks as dense semantic embeddings and retrieves evidence according to semantic similarity with the user's query.
+The system combines complementary information-retrieval techniques:
 
-A second-stage **cross-encoder reranker** then jointly evaluates each query-passage pair and reorders the retrieved candidates before the final results are returned.
+- **Dense semantic retrieval** captures semantic similarity even when query and document wording differ.
+- **BM25 lexical retrieval** rewards exact and rare term matches.
+- **Reciprocal Rank Fusion** combines both rankings without requiring their raw scores to be directly comparable.
+- **Cross-encoder reranking** remains available as an optional second-stage ranking strategy.
+
+The benchmark showed that a more complex neural pipeline was not automatically better: on the current manually annotated evaluation set, **Hybrid RRF without cross-encoder reranking produced the highest MRR**, while BM25 produced the highest Recall@5.
+
+This makes the default retrieval behavior **benchmark-driven rather than complexity-driven**.
 
 The system supports:
 
 - PDF ingestion
 - Page-aware text extraction
 - Overlapping text chunking
-- Semantic document search
-- Dense vector retrieval with FAISS
-- Cross-encoder neural reranking
+- L2-normalized Sentence Transformer embeddings
+- Dense semantic retrieval with FAISS
+- BM25 lexical retrieval
+- Hybrid dense + lexical retrieval
+- Reciprocal Rank Fusion
+- Optional cross-encoder reranking
+- Five retrieval strategies
+- Three candidate-pool modes
 - Citation-aware retrieval
 - Question answering over indexed documents
 - Multi-document comparison
-- Page-level evidence provenance
-- Retrieval quality benchmarking
+- Document + page evidence provenance
+- Retrieval benchmarking
 - Candidate-pool ablation experiments
 - Latency evaluation
-- Configurable retrieval modes
-- Persistent local vector indexing
+- Persistent local indexing
 - FastAPI REST API
-- Interactive Swagger/OpenAPI documentation
+- Swagger/OpenAPI documentation
 - Automated testing
 - Docker support
 - GitHub Actions CI
@@ -56,73 +71,189 @@ Uploaded research papers and generated vector indexes are not distributed with t
 
 ---
 
-## Architecture
+# Architecture
 
-The main retrieval pipeline is:
+## Document Ingestion
 
 ```text
 PDF Document
-     |
-     v
-PDF Text Extraction
-     |
-     v
-Page-Aware Chunking
-     |
-     v
-Normalized Sentence-Transformer Embeddings
-     |
-     v
+      |
+      v
+Page-Aware Text Extraction
+      |
+      v
+Overlapping Text Chunks
+      |
+      +-----------------------------+
+      |                             |
+      v                             v
+Sentence Transformer           BM25 Index
+Embeddings
+      |
+      v
 FAISS Vector Index
-     |
-     v
-Dense Semantic Retrieval
-     |
-     v
-Candidate Passages
-     |
-     v
-Cross-Encoder Reranking
-     |
-     v
-Ranked Evidence
-     |
-     +--------------------------+
-     |                          |
-     v                          v
-Question Answering      Multi-Document Comparison
-     |                          |
-     v                          v
-Citation-Aware Output   Per-Document Evidence
 ```
 
-### Ingestion Pipeline
+Both retrieval indexes operate over the same chunk metadata:
 
 ```text
-PDF
- -> extract pages
- -> split pages into overlapping chunks
- -> generate normalized embeddings
- -> store embeddings and metadata
+chunk_id
+document
+page
+text
 ```
 
-### Query Pipeline
+After every document ingestion, the BM25 index is rebuilt from the complete locally persisted chunk collection.
+
+---
+
+## Default Query Pipeline
+
+The benchmark-selected default retrieval strategy is:
 
 ```text
-Question
- -> generate normalized query embedding
- -> retrieve candidate chunks with FAISS
- -> rerank candidates with CrossEncoder
- -> return highest-ranked evidence
+                         Query
+                           |
+                +----------+----------+
+                |                     |
+                v                     v
+          Dense Retrieval        BM25 Retrieval
+             (FAISS)               (Lexical)
+                |                     |
+                +----------+----------+
+                           |
+                           v
+                Reciprocal Rank Fusion
+                           |
+                           v
+                     Final Top-K
+                           |
+             +-------------+-------------+
+             |                           |
+             v                           v
+      Question Answering       Citation-Aware Output
+```
+
+The default `hybrid` strategy does **not** apply a cross-encoder after RRF.
+
+This design follows the measured benchmark result in which Hybrid RRF achieved higher MRR than Hybrid + Cross-Encoder reranking while requiring substantially less inference time.
+
+---
+
+## Optional Reranking Pipelines
+
+Cross-encoder reranking remains available through dedicated strategies.
+
+### Dense + Cross-Encoder
+
+```text
+Query
+  |
+  v
+Dense FAISS Retrieval
+  |
+  v
+Candidate Pool
+  |
+  v
+Cross-Encoder
+  |
+  v
+Final Top-K
+```
+
+### Hybrid + Cross-Encoder
+
+```text
+                 Query
+                   |
+          +--------+--------+
+          |                 |
+          v                 v
+       Dense              BM25
+          |                 |
+          +--------+--------+
+                   |
+                   v
+                  RRF
+                   |
+                   v
+          Cross-Encoder
+                   |
+                   v
+              Final Top-K
+```
+
+The current cross-encoder is:
+
+```text
+cross-encoder/ms-marco-MiniLM-L6-v2
 ```
 
 ---
 
-## Retrieval Design
+# Retrieval Strategies
 
-### Dense Retrieval
+The API exposes five retrieval strategies.
 
-Document chunks and queries are encoded with a Sentence Transformer using:
+| Strategy | Pipeline | Reranker |
+|---|---|---|
+| `dense` | FAISS dense retrieval | No |
+| `bm25` | BM25 lexical retrieval | No |
+| `hybrid` | Dense + BM25 + RRF | No |
+| `dense_reranked` | Dense → Cross-Encoder | Yes |
+| `hybrid_reranked` | Dense + BM25 → RRF → Cross-Encoder | Yes |
+
+The default strategy is:
+
+```text
+hybrid
+```
+
+This strategy was selected because it achieved the **highest MRR** in the current five-way benchmark.
+
+---
+
+# Retrieval Modes
+
+Retrieval modes control candidate-pool size independently from retrieval strategy.
+
+| Mode | Candidate Pool | Intended Use |
+|---|---:|---|
+| `fast` | 5 | Lower candidate-processing cost |
+| `balanced` | 10 | Intermediate configuration |
+| `quality` | 20 | Larger retrieval candidate pool |
+
+The default mode is:
+
+```text
+quality
+```
+
+For non-reranked strategies, candidate-pool size controls how many initial retrieval candidates are generated before final top-k truncation.
+
+For reranked strategies, it also controls how many candidates are passed to the cross-encoder.
+
+Example:
+
+```json
+{
+  "query": "What methods were used to forecast migraine?",
+  "top_k": 5,
+  "retrieval_mode": "quality",
+  "retrieval_strategy": "hybrid"
+}
+```
+
+---
+
+# Retrieval Components
+
+## Dense Semantic Retrieval
+
+Document chunks and queries are encoded using a Sentence Transformer.
+
+Embeddings are generated with:
 
 ```python
 normalize_embeddings=True
@@ -134,67 +265,109 @@ The vector index uses:
 FAISS IndexFlatIP
 ```
 
-Because both document and query embeddings are L2-normalized, inner-product search is equivalent to **cosine-similarity ranking**.
+Since both document and query embeddings are L2-normalized, inner-product ranking is equivalent to cosine-similarity ranking.
 
-This provides efficient first-stage semantic retrieval.
+This provides the semantic retrieval component of the system.
 
-### Cross-Encoder Reranking
+---
 
-Dense embedding similarity is efficient, but it does not always provide the best ranking of retrieved passages.
+## BM25 Lexical Retrieval
 
-For this reason, the system performs second-stage neural reranking.
+The project includes a local BM25 implementation operating over the same document chunks stored by the dense vector index.
+
+BM25 scores each chunk using:
+
+- Query-term frequency
+- Document frequency
+- Inverse document frequency
+- Chunk length normalization
+- Configurable `k1`
+- Configurable `b`
+
+Default parameters:
 
 ```text
-Query
-  |
-  v
-Dense Retrieval
-  |
-  v
-Candidate Pool
-  |
-  v
-Cross-Encoder
-  |
-  v
-Final Top-K Evidence
+k1 = 1.5
+b = 0.75
 ```
 
-The cross-encoder jointly evaluates:
+BM25 was particularly effective on the current scientific-paper evaluation set, achieving the highest measured Recall@5.
+
+---
+
+## Reciprocal Rank Fusion
+
+Dense and BM25 scores exist on incompatible numeric scales.
+
+Rather than directly adding or normalizing those scores, Hybrid retrieval combines their **rank positions** using Reciprocal Rank Fusion.
+
+For a document ranked at position `r`:
+
+```text
+RRF contribution = 1 / (k + r)
+```
+
+The implementation uses:
+
+```text
+k = 60
+```
+
+Evidence appearing highly in both dense and lexical rankings therefore receives a stronger combined score.
+
+The hybrid result preserves:
+
+```text
+rrf_score
+dense_score
+bm25_score
+```
+
+so the contribution of each retrieval component remains inspectable.
+
+---
+
+## Cross-Encoder Reranking
+
+Cross-encoder reranking jointly evaluates each:
 
 ```text
 (query, candidate passage)
 ```
 
-and assigns an independent relevance score to every candidate.
+pair.
 
-The current reranker is:
+Unlike dense retrieval, the query and candidate are processed together, enabling more detailed relevance scoring.
 
-```text
-cross-encoder/ms-marco-MiniLM-L6-v2
-```
-
-The candidates are then reordered according to their reranker scores.
+The project keeps reranking optional because benchmark results showed that additional neural inference did not improve every retrieval configuration.
 
 ---
 
-## Retrieval Modes
+# PDF Ingestion
 
-The API exposes three retrieval modes that control the number of dense candidates passed to the cross-encoder.
+PDF files can be uploaded through the API.
 
-| Mode | Candidate Pool | Intended Use |
-|---|---:|---|
-| `fast` | 5 | Lowest latency |
-| `balanced` | 10 | Intermediate configuration |
-| `quality` | 20 | Higher retrieval coverage |
+The ingestion pipeline:
 
-The default mode is:
+1. Stores the uploaded PDF locally
+2. Extracts text page by page
+3. Splits each page into overlapping chunks
+4. Generates L2-normalized semantic embeddings
+5. Adds embeddings and metadata to the persistent FAISS index
+6. Rebuilds the BM25 lexical index from the persisted chunk collection
 
-```text
-quality
-```
+Stored metadata includes:
 
-These modes were selected based on an empirical candidate-pool ablation experiment.
+- Document name
+- Page number
+- Chunk ID
+- Extracted text
+
+---
+
+# Search
+
+The `/search` endpoint supports all five retrieval strategies.
 
 Example:
 
@@ -202,52 +375,12 @@ Example:
 {
   "query": "What methods were used to forecast migraine?",
   "top_k": 5,
-  "retrieval_mode": "quality"
+  "retrieval_mode": "quality",
+  "retrieval_strategy": "hybrid"
 }
 ```
 
-The same retrieval modes are available through the `/ask` endpoint.
-
----
-
-## Features
-
-### PDF Ingestion
-
-PDF files can be uploaded through the API.
-
-The ingestion pipeline:
-
-1. Stores the uploaded document locally
-2. Extracts text page by page
-3. Splits pages into overlapping chunks
-4. Generates normalized semantic embeddings
-5. Adds embeddings and metadata to the persistent FAISS index
-
-Stored metadata includes:
-
-- Document name
-- Page number
-- Chunk identifier
-- Extracted text
-
----
-
-## Semantic Search
-
-The `/search` endpoint performs dense semantic retrieval followed by cross-encoder reranking.
-
-Example request:
-
-```json
-{
-  "query": "What methods were used to forecast migraine?",
-  "top_k": 5,
-  "retrieval_mode": "quality"
-}
-```
-
-Typical result:
+Example Hybrid result:
 
 ```json
 {
@@ -255,19 +388,48 @@ Typical result:
   "document": "paper.pdf",
   "page": 4,
   "text": "...",
-  "score": 0.72,
-  "reranker_score": 3.91
+  "score": null,
+  "rrf_score": 0.0325,
+  "dense_score": 0.712,
+  "bm25_score": 3.84,
+  "reranker_score": null
 }
 ```
 
-The fields represent:
+For a `dense_reranked` result, the response may instead contain:
 
-- `score`: first-stage dense retrieval similarity
-- `reranker_score`: second-stage cross-encoder relevance score
+```json
+{
+  "chunk_id": "paper.pdf:p4:c2",
+  "document": "paper.pdf",
+  "page": 4,
+  "text": "...",
+  "score": 0.712,
+  "rrf_score": null,
+  "dense_score": null,
+  "bm25_score": null,
+  "reranker_score": 4.18
+}
+```
+
+### Score Semantics
+
+- `score`
+  - raw first-stage score for pure dense or BM25 retrieval
+- `rrf_score`
+  - ranking score produced by Reciprocal Rank Fusion
+- `dense_score`
+  - original dense component score preserved by Hybrid retrieval
+- `bm25_score`
+  - original lexical component score preserved by Hybrid retrieval
+- `reranker_score`
+  - cross-encoder relevance score for reranked strategies
+
+This avoids treating scores from different retrieval algorithms as though they were directly interchangeable.
 
 ---
 
-## Question Answering
+# Question Answering
 
 The `/ask` endpoint combines retrieval with answer generation.
 
@@ -277,7 +439,8 @@ Example:
 {
   "question": "What limitations did the authors report?",
   "top_k": 5,
-  "retrieval_mode": "quality"
+  "retrieval_mode": "quality",
+  "retrieval_strategy": "hybrid"
 }
 ```
 
@@ -292,49 +455,50 @@ Example response:
       "page": 9,
       "chunk_id": "paper.pdf:p9:c1",
       "text": "...",
-      "score": 0.68,
-      "reranker_score": 4.12
+      "score": null,
+      "rrf_score": 0.0321,
+      "dense_score": 0.68,
+      "bm25_score": 4.07,
+      "reranker_score": null
     }
   ]
 }
 ```
 
-The retrieval mode controls the candidate pool used before reranking.
-
-When no external LLM is configured, the application remains usable as a retrieval-oriented research assistant based on evidence extracted from indexed documents.
-
-This keeps the core retrieval pipeline local and avoids requiring a paid hosted API.
+When no external LLM is configured, the system remains usable as a retrieval-oriented research assistant based on locally indexed evidence.
 
 ---
 
-## Citations and Evidence Provenance
+# Citations and Evidence Provenance
 
-Every retrieved chunk preserves its source metadata.
+Every retrieved chunk preserves source metadata.
 
-Evidence information includes:
+Evidence may include:
 
 - Document
 - Page
 - Chunk ID
 - Retrieved text
-- Dense retrieval score
-- Cross-encoder reranker score
+- Dense score
+- BM25 score
+- RRF score
+- Cross-encoder score where applicable
 
-Human-readable citations can be represented as:
+Human-readable provenance can be represented as:
 
 ```text
 [paper.pdf, p. 4]
 ```
 
-This allows retrieved evidence to be traced back to its original source document.
+This allows evidence to be traced back to its original PDF.
 
 ---
 
-## Multi-Document Comparison
+# Multi-Document Comparison
 
 The `/compare` endpoint evaluates the same research question across multiple indexed documents.
 
-Example request:
+Example:
 
 ```json
 {
@@ -347,67 +511,74 @@ Example request:
 }
 ```
 
-The system:
+The comparison pipeline:
 
-1. Performs semantic retrieval
-2. Filters candidate chunks by document
-3. Reranks evidence independently for each document
-4. Returns the strongest evidence from every requested paper
-5. Generates an extractive comparison summary
-6. Identifies frequently shared terms across selected evidence
+1. Performs Hybrid Dense + BM25 retrieval
+2. Combines results with RRF
+3. Separates candidates by requested document
+4. Applies cross-encoder reranking independently within each document
+5. Returns the strongest evidence for each paper
+6. Generates an extractive comparison summary
+7. Identifies frequently shared terms
 
-Example response structure:
-
-```json
-{
-  "question": "Compare the data sources and methods used to study migraine.",
-  "documents": [
-    {
-      "document": "paper_a.pdf",
-      "evidence": [
-        {
-          "rank": 1,
-          "document": "paper_a.pdf",
-          "page": 2,
-          "chunk_id": "paper_a.pdf:p2:c2",
-          "retrieval_score": 0.6248,
-          "reranker_score": 3.3921,
-          "citation": "[paper_a.pdf, p. 2]",
-          "text": "..."
-        }
-      ]
-    }
-  ],
-  "summary": {
-    "papers": [],
-    "shared_terms": [],
-    "note": "Extractive comparison summary generated from the highest-ranked evidence chunks; no external LLM used."
-  }
-}
-```
+Cross-encoder reranking remains useful here as a dedicated per-document evidence-ranking stage.
 
 Potential use cases include:
 
-- Literature review workflows
+- Literature review
 - Methodology comparison
 - Dataset comparison
 - Limitation analysis
 - Model performance comparison
-- Research paper review
+- Technical-document comparison
 
 ---
 
 # Evaluation
 
-## Retrieval Metrics
+## Evaluation Ground Truth
 
-The project includes a dedicated retrieval evaluation pipeline.
+The benchmark contains:
 
-Evaluation focuses on whether manually annotated relevant source pages appear near the top of the retrieved ranking.
+```text
+12 manually curated research queries
+```
+
+Relevance is represented using:
+
+```text
+(document, page)
+```
+
+rather than page number alone.
+
+Example:
+
+```json
+{
+  "query": "What methods were used to forecast migraine?",
+  "relevant_locations": [
+    {
+      "document": "Forecasting migraine with time-series.pdf",
+      "page": 4
+    },
+    {
+      "document": "Forecasting migraine with time-series.pdf",
+      "page": 5
+    }
+  ]
+}
+```
+
+This prevents a page with the same numeric page number from a different indexed PDF from being counted as relevant accidentally.
+
+---
+
+## Metrics
 
 ### Recall@k
 
-Recall@k measures the fraction of relevant evidence retrieved within the first `k` results.
+Recall@k measures the fraction of annotated relevant locations retrieved within the first `k` results.
 
 The benchmark reports:
 
@@ -416,68 +587,160 @@ Recall@3
 Recall@5
 ```
 
-Higher values indicate better retrieval coverage near the top of the ranking.
+Higher values indicate greater evidence coverage near the top of the ranking.
 
 ### Mean Reciprocal Rank
 
-Mean Reciprocal Rank measures how early the first relevant result appears.
-
-For an individual query:
+Reciprocal Rank for one query is:
 
 ```text
-Reciprocal Rank = 1 / rank_of_first_relevant_result
+RR = 1 / rank_of_first_relevant_result
 ```
 
-MRR is the mean reciprocal rank across all evaluation queries.
+MRR averages reciprocal rank across all evaluation queries.
 
-An MRR closer to `1.0` indicates that relevant evidence tends to appear earlier in the ranking.
+Higher MRR means that the first relevant result tends to appear earlier.
 
 ---
 
-## Dense vs Reranked Retrieval Benchmark
+# Five-Way Retrieval Benchmark
 
-Retrieval quality was evaluated using **12 manually curated research questions** with page-level relevance annotations.
+The main benchmark compares:
 
-The experiment compares:
+1. BM25
+2. Dense FAISS retrieval
+3. Hybrid Dense + BM25 + RRF
+4. Dense + Cross-Encoder
+5. Hybrid RRF + Cross-Encoder
+
+Evaluation configuration:
 
 ```text
-Dense FAISS Retrieval
+Queries: 12
+Candidate pool: 20
+Evaluation unit: document + page
+Metrics: Recall@3, Recall@5, MRR
 ```
 
-against:
+## Results
 
-```text
-Dense FAISS Retrieval
-        +
-Cross-Encoder Reranking
-```
-
-The same initial dense candidate pool is used for the reranking experiment so that the contribution of the second-stage model can be measured directly.
-
-### Results
-
-| Retrieval Strategy | Recall@3 | Recall@5 | MRR | Avg. Query Latency |
+| Retrieval Strategy | Recall@3 | Recall@5 | MRR | Avg. Latency |
 |---|---:|---:|---:|---:|
-| Dense Retrieval | 0.708 | 0.792 | 0.597 | 397 ms |
-| Dense + Cross-Encoder Reranking | 0.708 | **0.875** | **0.736** | 2202 ms |
+| **BM25** | **0.8333** | **0.9583** | 0.7500 | **~2.9 ms** |
+| Dense FAISS | 0.7083 | 0.7917 | 0.5972 | ~21.6 ms |
+| **Hybrid RRF** | 0.7917 | 0.8750 | **0.8055** | ~15.9 ms |
+| Dense + Cross-Encoder | 0.7083 | 0.8750 | 0.7361 | ~1210 ms |
+| Hybrid + Cross-Encoder | 0.7917 | 0.8750 | 0.7361 | ~1 s |
 
-Cross-encoder reranking produced:
-
-- **23.3% relative improvement in MRR**
-- **10.5% relative improvement in Recall@5**
-- No observed improvement in Recall@3
-
-The experiment demonstrates that second-stage reranking improves evidence ordering and top-five retrieval coverage, while introducing additional inference latency.
-
-This exposes a measurable **retrieval quality vs latency trade-off**.
+Latency values are local measurements and may vary between benchmark runs and hardware environments.
 
 ---
 
-## Candidate Pool Ablation
+## Benchmark Findings
 
-A separate ablation experiment evaluated how many dense candidates should be passed to the cross-encoder.
+### Hybrid vs Dense
 
-Each candidate-pool configuration was evaluated over the same **12 queries** using **three repeated runs after model warm-up**.
+Hybrid RRF improved MRR from:
+
+```text
+0.5972 -> 0.8055
+```
+
+which corresponds to approximately:
+
+```text
++34.9%
+```
+
+relative MRR improvement.
+
+Recall@5 improved from:
+
+```text
+0.7917 -> 0.8750
+```
+
+or approximately:
+
+```text
++10.5%
+```
+
+relative improvement.
+
+### BM25
+
+BM25 achieved:
+
+```text
+Recall@5 = 0.9583
+```
+
+the highest measured Recall@5 in the current evaluation.
+
+It also produced the lowest retrieval latency.
+
+This result is plausible for the current corpus because many evaluation questions contain scientific terminology that overlaps directly with the source paper.
+
+### Hybrid RRF
+
+Hybrid achieved:
+
+```text
+MRR = 0.8055
+```
+
+the highest MRR in the benchmark.
+
+The result suggests that combining lexical and semantic rankings improved the placement of the first relevant result.
+
+### Cross-Encoder Reranking
+
+Cross-encoder reranking improved the original dense baseline:
+
+```text
+Dense MRR
+0.5972
+
+Dense + CrossEncoder MRR
+0.7361
+```
+
+However, applying the same cross-encoder after Hybrid RRF reduced MRR:
+
+```text
+Hybrid RRF
+0.8055
+
+Hybrid + CrossEncoder
+0.7361
+```
+
+without improving Recall@3 or Recall@5 in the current evaluation.
+
+For this reason, the system does **not** assume that additional neural reranking always improves retrieval.
+
+The default strategy is therefore:
+
+```text
+hybrid
+```
+
+rather than:
+
+```text
+hybrid_reranked
+```
+
+This is an intentional benchmark-driven engineering decision.
+
+---
+
+# Candidate-Pool Ablation
+
+A separate experiment evaluated the number of candidates used by the reranking pipeline.
+
+Each configuration was run three times after model warm-up.
 
 | Candidate Pool | Recall@5 | MRR | Median Total Latency |
 |---:|---:|---:|---:|
@@ -486,91 +749,32 @@ Each candidate-pool configuration was evaluated over the same **12 queries** usi
 | 20 | **0.875** | 0.736 | 1245 ms |
 | 40 | 0.833 | 0.715 | 2663 ms |
 
-### Findings
+The ablation showed:
 
-- `candidate_k = 5` achieved the **lowest latency** and highest measured MRR.
-- `candidate_k = 20` achieved the **highest Recall@5**.
-- Increasing the pool from 20 to 40 substantially increased latency without improving retrieval quality.
-- `candidate_k = 10` did not provide a better operating point than the configurations at 5 or 20 in this evaluation.
+- Smaller candidate pools can substantially reduce reranking latency.
+- `candidate_k = 20` produced the highest Recall@5 for the evaluated reranking configuration.
+- Increasing the pool from 20 to 40 increased latency without improving retrieval quality.
+- `candidate_k = 5` represented a strong low-latency reranking operating point.
 
-The experiment therefore identifies two useful operating points:
-
-```text
-fast
-candidate_k = 5
-```
-
-for latency-sensitive retrieval, and:
-
-```text
-quality
-candidate_k = 20
-```
-
-for higher retrieval coverage.
-
-The API exposes both configurations directly through retrieval modes.
+These findings motivated the API retrieval modes.
 
 ---
 
-## Evaluation Configuration
+# Evaluation Files
 
-### Main Retrieval Benchmark
-
-- Evaluation queries: **12**
-- Candidate pool: **20 chunks**
-- Metrics:
-  - Recall@3
-  - Recall@5
-  - Mean Reciprocal Rank
-- Dense retrieval:
-  - Sentence Transformer embeddings
-  - L2-normalized vectors
-  - FAISS inner-product search
-  - Cosine-equivalent ranking
-- Reranker:
-  - `cross-encoder/ms-marco-MiniLM-L6-v2`
-- Measurements:
-  - Dense retrieval latency
-  - Cross-encoder reranking latency
-  - Total retrieval latency
-
-### Candidate-Pool Ablation
-
-Candidate values:
-
-```text
-5
-10
-20
-40
-```
-
-Runs per configuration:
-
-```text
-3
-```
-
-Model warm-up is performed before timing to reduce one-time initialization effects.
-
----
-
-## Evaluation Files
-
-Evaluation queries:
+Ground-truth evaluation set:
 
 ```text
 evaluation/retrieval_eval.json
 ```
 
-Main benchmark output:
+Main five-way benchmark:
 
 ```text
 evaluation/retrieval_benchmark.json
 ```
 
-Candidate-pool ablation output:
+Candidate-pool ablation:
 
 ```text
 evaluation/candidate_k_ablation.json
@@ -588,7 +792,7 @@ Ablation implementation:
 src/evaluation/ablation.py
 ```
 
-Run the retrieval benchmark:
+Run the main benchmark:
 
 ```bash
 python -m src.evaluation.retrieval
@@ -610,9 +814,7 @@ python -m src.evaluation.ablation
 GET /health
 ```
 
-Returns service status and current number of indexed chunks.
-
-Example:
+Example response:
 
 ```json
 {
@@ -623,7 +825,7 @@ Example:
 
 ---
 
-## Upload Document
+## Upload PDF
 
 ```http
 POST /documents/upload
@@ -631,7 +833,7 @@ POST /documents/upload
 
 Uploads and indexes a PDF.
 
-Example response:
+Example:
 
 ```json
 {
@@ -652,24 +854,33 @@ Non-PDF uploads are rejected.
 POST /search
 ```
 
-Performs dense semantic retrieval followed by cross-encoder reranking.
-
 Example:
 
 ```json
 {
   "query": "What data sources were used in the study?",
   "top_k": 5,
-  "retrieval_mode": "quality"
+  "retrieval_mode": "quality",
+  "retrieval_strategy": "hybrid"
 }
 ```
 
-Supported retrieval modes:
+Supported modes:
 
 ```text
 fast
 balanced
 quality
+```
+
+Supported strategies:
+
+```text
+dense
+bm25
+hybrid
+dense_reranked
+hybrid_reranked
 ```
 
 ---
@@ -680,15 +891,14 @@ quality
 POST /ask
 ```
 
-Retrieves relevant evidence and produces a citation-aware answer.
-
 Example:
 
 ```json
 {
   "question": "What limitations were reported?",
   "top_k": 5,
-  "retrieval_mode": "quality"
+  "retrieval_mode": "quality",
+  "retrieval_strategy": "hybrid"
 }
 ```
 
@@ -699,8 +909,6 @@ Example:
 ```http
 POST /compare
 ```
-
-Compares evidence across multiple indexed documents.
 
 Example:
 
@@ -717,28 +925,27 @@ Example:
 
 ---
 
-## Interactive API Documentation
+# Interactive API Documentation
 
-FastAPI automatically exposes Swagger/OpenAPI documentation.
-
-Start the API and open:
+FastAPI exposes interactive Swagger documentation at:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-The Swagger interface can be used to:
+The interface allows users to:
 
-- Upload PDF documents
-- Run semantic searches
-- Select retrieval modes
+- Upload PDFs
+- Run searches
+- Select retrieval mode
+- Select retrieval strategy
 - Ask document-grounded questions
 - Compare documents
 - Inspect request schemas
 - Inspect response schemas
-- Execute API requests interactively
+- Execute requests interactively
 
-OpenAPI JSON is available at:
+OpenAPI JSON:
 
 ```text
 http://127.0.0.1:8000/openapi.json
@@ -755,12 +962,13 @@ http://127.0.0.1:8000/openapi.json
 - Uvicorn
 - Pydantic
 
-## Machine Learning and Retrieval
+## Retrieval and Machine Learning
 
 - Sentence Transformers
-- Transformer-based embeddings
-- Cross-Encoder reranking
 - FAISS
+- BM25
+- Reciprocal Rank Fusion
+- Cross-Encoder reranking
 - NumPy
 - PyTorch
 
@@ -777,8 +985,8 @@ http://127.0.0.1:8000/openapi.json
 
 - Docker
 - GitHub Actions
+- Persistent local indexes
 - Environment-based configuration
-- Persistent local vector index
 - Automated CI testing
 
 ---
@@ -811,10 +1019,12 @@ research-rag-assistant/
 |   |
 |   |-- core/
 |   |   |-- __init__.py
+|   |   |-- bm25.py
 |   |   |-- chunking.py
 |   |   |-- config.py
 |   |   |-- embeddings.py
 |   |   |-- generation.py
+|   |   |-- hybrid.py
 |   |   |-- pdf.py
 |   |   |-- rag.py
 |   |   |-- reranker.py
@@ -830,7 +1040,9 @@ research-rag-assistant/
 |
 |-- tests/
 |   |-- test_api.py
+|   |-- test_bm25.py
 |   |-- test_chunking.py
+|   |-- test_hybrid.py
 |   `-- test_vector_store.py
 |
 |-- .env.example
@@ -846,24 +1058,19 @@ research-rag-assistant/
 
 # Installation
 
-## 1. Clone the Repository
+## 1. Clone
 
 ```bash
-git clone <repository-url>
-cd research-rag-assistant
+git clone https://github.com/vasilischr01/Research-rag-assistant.git
+cd Research-rag-assistant
 ```
 
-## 2. Create a Virtual Environment
+## 2. Create Virtual Environment
 
 ### Windows
 
 ```powershell
 py -3.11 -m venv .venv
-```
-
-Activate:
-
-```powershell
 .venv\Scripts\Activate.ps1
 ```
 
@@ -883,8 +1090,6 @@ pip install -r requirements.txt
 ---
 
 # Running the API
-
-Start the FastAPI development server:
 
 ```bash
 uvicorn src.api.main:app --reload
@@ -906,27 +1111,33 @@ http://127.0.0.1:8000/docs
 
 # Running Tests
 
-Run the complete test suite:
-
 ```bash
 pytest -q
 ```
 
-Current test result:
+Current development result:
 
 ```text
-11 passed
+20 passed
 ```
 
-The test suite covers functionality including:
+The test suite covers:
 
 - API health checks
 - Upload validation
-- Semantic search
+- Search endpoint behavior
 - Retrieval-mode routing
-- Fast retrieval configuration
-- Quality retrieval configuration
+- Fast candidate-pool configuration
+- Quality candidate-pool configuration
 - Invalid retrieval-mode validation
+- BM25 tokenization
+- BM25 relevance ranking
+- BM25 top-k behavior
+- Empty BM25 behavior
+- Reciprocal Rank Fusion
+- RRF duplicate handling
+- RRF top-k behavior
+- Empty RRF behavior
 - Document comparison
 - Comparison response structure
 - Evidence ranking fields
@@ -950,8 +1161,8 @@ The CI workflow:
 2. Configures Python 3.11
 3. Uses pip dependency caching
 4. Upgrades pip
-5. Installs project dependencies
-6. Runs the pytest suite
+5. Installs dependencies
+6. Executes the pytest suite
 
 Workflow:
 
@@ -963,156 +1174,167 @@ Workflow:
 
 # Docker
 
-A Dockerfile is included for containerized execution.
-
-Build the image:
+Build the container:
 
 ```bash
 docker build -t research-rag-assistant .
 ```
 
-Run it according to the environment and port configuration used by the application.
+The Docker image provides a reproducible environment for running the API and retrieval stack.
 
 ---
 
-# Data and PDFs
+# Data and Privacy
 
-Uploaded PDF documents are **not included in this repository**.
+Uploaded PDF documents are not included in the repository.
 
-Generated vector indexes are also excluded from version control.
+Generated vector indexes are also excluded from Git.
 
-The following directories are intentionally ignored:
+Ignored directories include:
 
 ```text
 data/uploads/
 data/indexes/
 ```
 
-Only `.gitkeep` files are tracked so that the required directory structure remains present after cloning.
+Only `.gitkeep` files are tracked to preserve the directory structure.
 
-To use the project, upload your own PDF documents through:
-
-```http
-POST /documents/upload
-```
-
-This keeps user documents and generated retrieval artifacts local and prevents private or copyrighted documents from being unintentionally committed.
+The project can therefore be used with private documents without publishing those PDFs or generated indexes through the repository.
 
 ---
 
 # Configuration
 
-Environment-specific configuration can be stored in a local:
+Environment-specific settings can be stored in:
 
 ```text
 .env
 ```
 
-An example configuration file is provided:
+An example is provided:
 
 ```text
 .env.example
 ```
 
-Local environment files are excluded from Git, while `.env.example` remains tracked.
-
-Sensitive credentials and API keys should never be committed to the repository.
+`.env` files and credentials are excluded from Git.
 
 ---
 
 # Local-First Design
 
-The core retrieval pipeline operates locally.
-
-This includes:
+Core retrieval functionality runs locally:
 
 - PDF extraction
-- Page-aware chunking
+- Chunking
 - Embedding generation
-- Vector indexing
-- Semantic retrieval
-- Cross-encoder reranking
-- Multi-document evidence comparison
-- Retrieval evaluation
+- FAISS indexing
+- BM25 indexing
+- Dense retrieval
+- Lexical retrieval
+- RRF fusion
+- Optional cross-encoder reranking
+- Multi-document comparison
+- Evaluation
 - Benchmark generation
-- Candidate-pool ablation
 
-This allows the application to be developed and evaluated without requiring a paid hosted LLM API.
+The core retrieval architecture therefore does not require a paid hosted LLM service.
 
-A local or external language model can be added as an optional generation layer without redesigning the retrieval architecture.
+A local or external language model can be integrated as an optional answer-generation layer.
 
 ---
 
 # Engineering Decisions
 
-## Two-Stage Retrieval
+## Benchmark-Selected Default
 
-The system deliberately separates:
+The default retrieval pipeline was selected from measured results rather than from architectural complexity.
 
-```text
-efficient first-stage dense retrieval
-```
-
-from:
+The benchmark showed:
 
 ```text
-more computationally expensive second-stage neural reranking
+Hybrid RRF MRR = 0.8055
+
+Hybrid + CrossEncoder MRR = 0.7361
 ```
 
-This allows the pipeline to balance:
+Therefore:
 
-- Retrieval coverage
-- Ranking quality
-- Computational cost
-- Query latency
+```text
+hybrid
+```
 
-The included benchmark quantifies this trade-off instead of assuming that reranking is beneficial without measuring its cost.
+is the default strategy.
+
+The cross-encoder remains available when explicitly requested.
 
 ---
 
-## Configurable Retrieval Modes
+## Hybrid Retrieval
 
-Candidate-pool size is exposed as a user-facing retrieval mode rather than being permanently hardcoded.
+Dense and lexical retrieval capture different relevance signals.
 
-This allows the same retrieval system to support different operating requirements:
+Dense retrieval helps with:
+
+- Semantic similarity
+- Paraphrases
+- Conceptual matching
+
+BM25 helps with:
+
+- Exact terminology
+- Technical vocabulary
+- Rare terms
+- Acronyms
+- Literal phrase overlap
+
+RRF combines those rankings without requiring score calibration between BM25 and vector similarity.
+
+---
+
+## Explicit Score Provenance
+
+Hybrid retrieval does not expose an ambiguous generic ranking score.
+
+Instead it preserves:
 
 ```text
-fast
-balanced
-quality
+rrf_score
+dense_score
+bm25_score
 ```
 
-The modes are grounded in measured ablation results rather than arbitrary configuration values.
+This makes retrieval decisions easier to inspect and avoids conflating scores from different ranking algorithms.
 
 ---
 
 ## Persistent Vector Index
 
-FAISS embeddings and chunk metadata are persisted locally, allowing indexed documents to remain available between application restarts.
+FAISS embeddings and chunk metadata are persisted locally between application restarts.
+
+The BM25 index is reconstructed from the persisted chunk collection.
 
 ---
 
 ## Cosine-Equivalent Dense Search
 
-Embeddings are generated with L2 normalization.
+Embedding generation uses L2 normalization.
 
-FAISS `IndexFlatIP` therefore ranks normalized query and document vectors equivalently to cosine similarity.
-
----
-
-## Page-Level Provenance
-
-Every chunk retains source document and page metadata.
-
-This allows retrieved evidence to be traced back to the original PDF.
+FAISS `IndexFlatIP` therefore performs ranking equivalent to cosine similarity for the stored vectors.
 
 ---
 
-## Local-First Execution
+## Document + Page Evaluation
 
-Core retrieval functionality does not depend on external hosted APIs.
+Ground-truth relevance is represented as:
 
-This improves reproducibility and supports workflows involving private or sensitive documents.
+```text
+(document, page)
+```
+
+rather than page number alone.
+
+This prevents false-positive evaluation matches when several PDFs contain the same page number.
 
 ---
 
@@ -1120,16 +1342,18 @@ This improves reproducibility and supports workflows involving private or sensit
 
 The current implementation has several limitations:
 
-- The benchmark currently contains **12 manually curated evaluation queries** and should be interpreted as a development-level evaluation rather than a large-scale information retrieval benchmark.
-- Evaluation primarily measures retrieval performance rather than complete end-to-end answer correctness.
-- Page-level relevance annotations are used instead of fine-grained chunk-level human judgments.
-- The candidate-pool findings are based on the current evaluation corpus and may not generalize to substantially different document collections.
-- Multi-document summaries are extractive when no LLM is configured.
-- PDF parsing quality depends on source document structure.
-- Scanned image-only PDFs may require OCR.
-- The current FAISS index is designed primarily for local development rather than distributed large-scale retrieval.
-- Cross-encoder reranking improves retrieval quality but adds inference latency.
-- Latency measurements depend on local hardware and should not be interpreted as universal production performance.
+- The benchmark contains **12 manually curated queries**, so results should be interpreted as development-level evidence rather than a large-scale IR benchmark.
+- The evaluation corpus is currently limited and should be expanded across more documents and domains.
+- Findings such as BM25's strong performance may depend on the terminology and structure of the current scientific corpus.
+- Relevance annotations are page-level rather than chunk-level.
+- Retrieval evaluation does not yet measure full answer correctness.
+- Multi-document summaries are extractive when no language model is configured.
+- PDF parsing quality depends on source-document structure.
+- Image-only PDFs may require OCR.
+- The local BM25 implementation rebuilds its index after document ingestion rather than using a distributed persistent search engine.
+- The FAISS configuration targets local development rather than distributed retrieval at production scale.
+- Cross-encoder latency depends heavily on hardware.
+- Benchmark latency values are local measurements and should not be interpreted as universal production latency.
 
 ---
 
@@ -1137,50 +1361,54 @@ The current implementation has several limitations:
 
 Potential extensions include:
 
-- Larger and more diverse retrieval benchmark
-- Multi-document retrieval evaluation
-- Chunk-level human relevance annotations
-- BM25 baseline
-- Hybrid lexical + dense retrieval
-- Reciprocal Rank Fusion
+- Larger multi-document evaluation set
+- 30–50+ manually annotated benchmark queries
+- Chunk-level relevance judgments
+- More diverse scientific and technical corpora
+- Statistical confidence intervals for benchmark metrics
+- Repeated latency measurements for the five-way benchmark
 - Query rewriting
 - Metadata filtering
 - Document-level ranking
-- Answer-generation evaluation
+- Answer-quality evaluation
 - Faithfulness evaluation
 - Groundedness evaluation
 - Automated citation verification
 - Local LLM integration
 - Optional external LLM integration
-- Persistent database-backed metadata storage
+- Persistent database-backed metadata
 - Web frontend
-- Streaming answers
-- Docker Compose deployment
+- Streaming responses
+- Docker Compose
 - GPU acceleration
 - Prometheus metrics
 - Retrieval latency monitoring
-- Automated benchmark regression testing
 - Load testing
+- Automated benchmark regression testing
 - Larger-scale vector-store evaluation
 
 ---
 
 # Why This Project
 
-This project explores the engineering components required for a practical Retrieval-Augmented Generation system rather than treating RAG as only an LLM prompting problem.
+This project explores practical RAG engineering as an **information-retrieval system**, rather than treating RAG as only an LLM prompting task.
 
 The implementation focuses on:
 
-- Semantic retrieval
+- Dense retrieval
+- Lexical retrieval
+- Hybrid retrieval
+- Reciprocal Rank Fusion
 - Neural reranking
-- Retrieval quality
 - Evidence provenance
 - Quantitative evaluation
 - Ablation experiments
+- Benchmark-driven architecture decisions
 - Quality-latency trade-offs
-- Configurable inference behavior
+- Explainable score provenance
+- Configurable retrieval behavior
 - API design
-- Testing
+- Automated testing
 - Continuous integration
 - Reproducibility
 - Local-first execution

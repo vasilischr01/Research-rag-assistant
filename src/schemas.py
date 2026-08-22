@@ -9,6 +9,14 @@ RetrievalMode = Literal[
     "quality",
 ]
 
+RetrievalStrategy = Literal[
+    "dense",
+    "bm25",
+    "hybrid",
+    "dense_reranked",
+    "hybrid_reranked",
+]
+
 
 class SearchRequest(BaseModel):
     query: str = Field(
@@ -23,6 +31,8 @@ class SearchRequest(BaseModel):
     )
 
     retrieval_mode: RetrievalMode = "quality"
+
+    retrieval_strategy: RetrievalStrategy = "hybrid"
 
 
 class AskRequest(BaseModel):
@@ -39,13 +49,26 @@ class AskRequest(BaseModel):
 
     retrieval_mode: RetrievalMode = "quality"
 
+    retrieval_strategy: RetrievalStrategy = "hybrid"
+
 
 class Citation(BaseModel):
     chunk_id: str
     document: str
     page: int
     text: str
-    score: float
+
+    # Dense or BM25 first-stage score.
+    score: float | None = None
+
+    # Hybrid Reciprocal Rank Fusion score.
+    rrf_score: float | None = None
+
+    # Original component scores retained by hybrid retrieval.
+    dense_score: float | None = None
+    bm25_score: float | None = None
+
+    # Present only for reranked strategies.
     reranker_score: float | None = None
 
 

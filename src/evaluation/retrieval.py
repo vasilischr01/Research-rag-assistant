@@ -4,7 +4,6 @@ import json
 from pathlib import Path
 from time import perf_counter
 
-from src.core.embeddings import embed_texts
 from src.core.rag import rag_service
 from src.core.reranker import get_reranker, rerank
 
@@ -13,71 +12,142 @@ EVAL_PATH = Path("evaluation/retrieval_eval.json")
 OUTPUT_PATH = Path("evaluation/retrieval_benchmark.json")
 
 TOP_K_VALUES = (3, 5)
+FINAL_TOP_K = max(TOP_K_VALUES)
 CANDIDATE_K = 20
 
 
-def recall_at_k(
-    retrieved_pages: list[int],
-    relevant_pages: list[int],
-    k: int,
-) -> float:
-    retrieved = set(retrieved_pages[:k])
-    relevant = set(relevant_pages)
+SYSTEMS = (
+    "bm25",
+    "dense",
+    "hybrid",
+    "dense_reranked",
+    "hybrid_reranked",
+)
 
+
+def relevant_keys(example: dict) -> set:
+    """
+    Supports two evaluation formats.
+
+    Preferred:
+        "relevant_locations": [
+            {"document": "paper.pdf", "page": 4}
+        ]
+
+    Backwards-compatible:
+        "relevant_pages": [4, 5]
+
+    The preferred document+page representation avoids false positives
+    when multiple indexed PDFs contain the same page number.
+    """
+    if "relevant_locations" in example:
+        return {
+            (
+                item["document"],
+                item["page"],
+            )
+            for item in example[
+                "relevant_locations"
+            ]
+        }
+
+    return set(
+        example.get(
+            "relevant_pages",
+            [],
+        )
+    )
+
+
+def hit_key(
+    hit: dict,
+    use_document: bool,
+):
+    if use_document:
+        return (
+            hit["document"],
+            hit["page"],
+        )
+
+    return hit["page"]
+
+
+def recall_at_k(
+    hits: list[dict],
+    relevant: set,
+    k: int,
+    use_document: bool,
+) -> float:
     if not relevant:
         return 0.0
 
-    return len(retrieved & relevant) / len(relevant)
+    retrieved = {
+        hit_key(
+            hit,
+            use_document,
+        )
+        for hit in hits[:k]
+    }
+
+    return len(
+        retrieved & relevant
+    ) / len(relevant)
 
 
 def reciprocal_rank(
-    retrieved_pages: list[int],
-    relevant_pages: list[int],
+    hits: list[dict],
+    relevant: set,
+    use_document: bool,
 ) -> float:
-    relevant = set(relevant_pages)
-
-    for rank, page in enumerate(retrieved_pages, start=1):
-        if page in relevant:
+    for rank, hit in enumerate(
+        hits,
+        start=1,
+    ):
+        if (
+            hit_key(
+                hit,
+                use_document,
+            )
+            in relevant
+        ):
             return 1.0 / rank
 
     return 0.0
 
 
-def percentage_change(
-    baseline: float,
-    new_value: float,
-) -> float | None:
-    if baseline == 0:
-        return None
-
-    return ((new_value - baseline) / baseline) * 100
-
-
 def evaluate_result_set(
     hits: list[dict],
-    relevant_pages: list[int],
+    example: dict,
 ) -> dict:
-    retrieved_pages = [
-        hit["page"]
-        for hit in hits
-    ]
+    relevant = relevant_keys(
+        example
+    )
+
+    use_document = (
+        "relevant_locations"
+        in example
+    )
 
     metrics = {
         f"recall@{k}": round(
             recall_at_k(
-                retrieved_pages,
-                relevant_pages,
-                k,
+                hits=hits,
+                relevant=relevant,
+                k=k,
+                use_document=use_document,
             ),
             4,
         )
         for k in TOP_K_VALUES
     }
 
-    metrics["reciprocal_rank"] = round(
+    metrics[
+        "reciprocal_rank"
+    ] = round(
         reciprocal_rank(
-            retrieved_pages,
-            relevant_pages,
+            hits=hits,
+            relevant=relevant,
+            use_document=use_document,
         ),
         4,
     )
@@ -95,12 +165,72 @@ def mean_metric(
 
     return round(
         sum(
-            result[system][metric]
-            for result in results
+            item[system][metric]
+            for item in results
         )
         / len(results),
         4,
     )
+
+
+def mean_latency(
+    results: list[dict],
+    system: str,
+) -> float:
+    if not results:
+        return 0.0
+
+    return round(
+        sum(
+            item[system][
+                "latency_ms"
+            ]
+            for item in results
+        )
+        / len(results),
+        2,
+    )
+
+
+def format_hits(
+    hits: list[dict],
+) -> list[dict]:
+    return [
+        {
+            "document": hit[
+                "document"
+            ],
+            "page": hit["page"],
+            "chunk_id": hit[
+                "chunk_id"
+            ],
+        }
+        for hit in hits
+    ]
+
+
+def warm_up(
+    examples: list[dict],
+) -> None:
+    """
+    Warm up embedding and CrossEncoder inference so model initialization
+    is not counted as benchmark latency.
+    """
+    query = examples[0]["query"]
+
+    dense_candidates = (
+        rag_service.dense_search(
+            query=query,
+            candidate_k=CANDIDATE_K,
+        )
+    )
+
+    if dense_candidates:
+        rerank(
+            query=query,
+            results=dense_candidates,
+            top_k=FINAL_TOP_K,
+        )
 
 
 def evaluate_retrieval() -> dict:
@@ -118,239 +248,296 @@ def evaluate_retrieval() -> dict:
     if rag_service.store.size == 0:
         raise RuntimeError(
             "Vector store is empty. "
-            "Ingest documents before running evaluation."
+            "Ingest documents before "
+            "running evaluation."
         )
 
-    # Warm up the CrossEncoder before timing.
-    # This avoids counting model loading time as reranking latency.
+    # Ensure the reranker model is loaded.
     get_reranker()
+
+    print(
+        "Warming up embedding and "
+        "reranking models..."
+    )
+
+    warm_up(examples)
+
+    print(
+        "Warm-up complete.\n"
+    )
 
     results = []
 
-    dense_latencies = []
-    rerank_latencies = []
-    total_latencies = []
-
-    for example in examples:
+    for index, example in enumerate(
+        examples,
+        start=1,
+    ):
         query = example["query"]
-        relevant_pages = example["relevant_pages"]
 
-        # --------------------------------------------------
-        # Dense retrieval
-        # --------------------------------------------------
-
-        dense_start = perf_counter()
-
-        query_embedding = embed_texts(
-            [query]
+        print(
+            f"Evaluating query "
+            f"{index}/{len(examples)}"
         )
 
-        dense_candidates = rag_service.store.search(
-            query_embedding,
-            CANDIDATE_K,
+        # --------------------------------------------------
+        # 1. BM25
+        # --------------------------------------------------
+
+        start = perf_counter()
+
+        bm25_candidates = (
+            rag_service.bm25_search(
+                query=query,
+                candidate_k=CANDIDATE_K,
+            )
         )
 
-        dense_end = perf_counter()
-
-        dense_latency_ms = (
-            dense_end - dense_start
+        bm25_latency = (
+            perf_counter() - start
         ) * 1000
 
-        # Dense baseline uses the original FAISS ranking.
-        dense_hits = dense_candidates[: max(TOP_K_VALUES)]
+        bm25_hits = (
+            bm25_candidates[
+                :FINAL_TOP_K
+            ]
+        )
 
         # --------------------------------------------------
-        # Cross-encoder reranking
+        # 2. Dense FAISS
         # --------------------------------------------------
 
-        rerank_start = perf_counter()
+        start = perf_counter()
 
-        reranked_hits = rerank(
+        dense_candidates = (
+            rag_service.dense_search(
+                query=query,
+                candidate_k=CANDIDATE_K,
+            )
+        )
+
+        dense_latency = (
+            perf_counter() - start
+        ) * 1000
+
+        dense_hits = (
+            dense_candidates[
+                :FINAL_TOP_K
+            ]
+        )
+
+        # --------------------------------------------------
+        # 3. Hybrid RRF
+        # --------------------------------------------------
+
+        start = perf_counter()
+
+        hybrid_candidates = (
+            rag_service.hybrid_search(
+                query=query,
+                candidate_k=CANDIDATE_K,
+            )
+        )
+
+        hybrid_latency = (
+            perf_counter() - start
+        ) * 1000
+
+        hybrid_hits = (
+            hybrid_candidates[
+                :FINAL_TOP_K
+            ]
+        )
+
+        # --------------------------------------------------
+        # 4. Dense + CrossEncoder
+        # --------------------------------------------------
+
+        start = perf_counter()
+
+        dense_reranked_hits = rerank(
             query=query,
             results=dense_candidates,
-            top_k=max(TOP_K_VALUES),
+            top_k=FINAL_TOP_K,
         )
 
-        rerank_end = perf_counter()
-
-        rerank_latency_ms = (
-            rerank_end - rerank_start
+        dense_rerank_latency = (
+            perf_counter() - start
         ) * 1000
 
-        total_latency_ms = (
-            dense_latency_ms
-            + rerank_latency_ms
+        dense_reranked_total = (
+            dense_latency
+            + dense_rerank_latency
         )
 
-        dense_latencies.append(
-            dense_latency_ms
+        # --------------------------------------------------
+        # 5. Hybrid + CrossEncoder
+        # --------------------------------------------------
+
+        start = perf_counter()
+
+        hybrid_reranked_hits = (
+            rerank(
+                query=query,
+                results=hybrid_candidates,
+                top_k=FINAL_TOP_K,
+            )
         )
 
-        rerank_latencies.append(
-            rerank_latency_ms
+        hybrid_rerank_latency = (
+            perf_counter() - start
+        ) * 1000
+
+        hybrid_reranked_total = (
+            hybrid_latency
+            + hybrid_rerank_latency
         )
 
-        total_latencies.append(
-            total_latency_ms
+        systems = {
+            "bm25": (
+                bm25_hits,
+                bm25_latency,
+            ),
+            "dense": (
+                dense_hits,
+                dense_latency,
+            ),
+            "hybrid": (
+                hybrid_hits,
+                hybrid_latency,
+            ),
+            "dense_reranked": (
+                dense_reranked_hits,
+                dense_reranked_total,
+            ),
+            "hybrid_reranked": (
+                hybrid_reranked_hits,
+                hybrid_reranked_total,
+            ),
+        }
+
+        query_result = {
+            "query": query,
+        }
+
+        if (
+            "relevant_locations"
+            in example
+        ):
+            query_result[
+                "relevant_locations"
+            ] = example[
+                "relevant_locations"
+            ]
+        else:
+            query_result[
+                "relevant_pages"
+            ] = example.get(
+                "relevant_pages",
+                [],
+            )
+
+        for (
+            system_name,
+            (
+                hits,
+                latency,
+            ),
+        ) in systems.items():
+            metrics = (
+                evaluate_result_set(
+                    hits=hits,
+                    example=example,
+                )
+            )
+
+            query_result[
+                system_name
+            ] = {
+                **metrics,
+                "latency_ms": round(
+                    latency,
+                    2,
+                ),
+                "retrieved": (
+                    format_hits(hits)
+                ),
+            }
+
+        query_result[
+            "dense_reranked"
+        ][
+            "rerank_only_latency_ms"
+        ] = round(
+            dense_rerank_latency,
+            2,
         )
 
-        dense_metrics = evaluate_result_set(
-            dense_hits,
-            relevant_pages,
-        )
-
-        reranked_metrics = evaluate_result_set(
-            reranked_hits,
-            relevant_pages,
+        query_result[
+            "hybrid_reranked"
+        ][
+            "rerank_only_latency_ms"
+        ] = round(
+            hybrid_rerank_latency,
+            2,
         )
 
         results.append(
-            {
-                "query": query,
-                "relevant_pages": relevant_pages,
-                "dense": {
-                    **dense_metrics,
-                    "latency_ms": round(
-                        dense_latency_ms,
-                        2,
-                    ),
-                    "retrieved_pages": [
-                        hit["page"]
-                        for hit in dense_hits
-                    ],
-                },
-                "reranked": {
-                    **reranked_metrics,
-                    "rerank_latency_ms": round(
-                        rerank_latency_ms,
-                        2,
-                    ),
-                    "total_latency_ms": round(
-                        total_latency_ms,
-                        2,
-                    ),
-                    "retrieved_pages": [
-                        hit["page"]
-                        for hit in reranked_hits
-                    ],
-                },
-            }
+            query_result
         )
 
-    dense_recall_3 = mean_metric(
-        results,
-        "dense",
-        "recall@3",
-    )
+    # --------------------------------------------------
+    # Aggregate results
+    # --------------------------------------------------
 
-    dense_recall_5 = mean_metric(
-        results,
-        "dense",
-        "recall@5",
-    )
+    summary = {}
 
-    dense_mrr = mean_metric(
-        results,
-        "dense",
-        "reciprocal_rank",
-    )
-
-    reranked_recall_3 = mean_metric(
-        results,
-        "reranked",
-        "recall@3",
-    )
-
-    reranked_recall_5 = mean_metric(
-        results,
-        "reranked",
-        "recall@5",
-    )
-
-    reranked_mrr = mean_metric(
-        results,
-        "reranked",
-        "reciprocal_rank",
-    )
+    for system in SYSTEMS:
+        summary[system] = {
+            "mean_recall@3": (
+                mean_metric(
+                    results,
+                    system,
+                    "recall@3",
+                )
+            ),
+            "mean_recall@5": (
+                mean_metric(
+                    results,
+                    system,
+                    "recall@5",
+                )
+            ),
+            "mrr": (
+                mean_metric(
+                    results,
+                    system,
+                    "reciprocal_rank",
+                )
+            ),
+            "avg_latency_ms": (
+                mean_latency(
+                    results,
+                    system,
+                )
+            ),
+        }
 
     report = {
         "queries": len(results),
         "candidate_k": CANDIDATE_K,
-        "dense": {
-            "mean_recall@3": dense_recall_3,
-            "mean_recall@5": dense_recall_5,
-            "mrr": dense_mrr,
-            "avg_latency_ms": round(
-                sum(dense_latencies)
-                / len(dense_latencies),
-                2,
-            ),
-        },
-        "reranked": {
-            "mean_recall@3": reranked_recall_3,
-            "mean_recall@5": reranked_recall_5,
-            "mrr": reranked_mrr,
-            "avg_rerank_latency_ms": round(
-                sum(rerank_latencies)
-                / len(rerank_latencies),
-                2,
-            ),
-            "avg_total_latency_ms": round(
-                sum(total_latencies)
-                / len(total_latencies),
-                2,
-            ),
-        },
-        "improvement": {
-            "recall@3_absolute": round(
-                reranked_recall_3
-                - dense_recall_3,
-                4,
-            ),
-            "recall@3_percent": (
-                None
-                if dense_recall_3 == 0
-                else round(
-                    percentage_change(
-                        dense_recall_3,
-                        reranked_recall_3,
-                    ),
-                    2,
-                )
-            ),
-            "recall@5_absolute": round(
-                reranked_recall_5
-                - dense_recall_5,
-                4,
-            ),
-            "recall@5_percent": (
-                None
-                if dense_recall_5 == 0
-                else round(
-                    percentage_change(
-                        dense_recall_5,
-                        reranked_recall_5,
-                    ),
-                    2,
-                )
-            ),
-            "mrr_absolute": round(
-                reranked_mrr
-                - dense_mrr,
-                4,
-            ),
-            "mrr_percent": (
-                None
-                if dense_mrr == 0
-                else round(
-                    percentage_change(
-                        dense_mrr,
-                        reranked_mrr,
-                    ),
-                    2,
-                )
-            ),
-        },
+        "top_k_values": list(
+            TOP_K_VALUES
+        ),
+        "evaluation_unit": (
+            "document+page"
+            if all(
+                "relevant_locations"
+                in example
+                for example in examples
+            )
+            else "page"
+        ),
+        "systems": summary,
         "results": results,
     }
 
@@ -374,12 +561,30 @@ if __name__ == "__main__":
     report = evaluate_retrieval()
 
     print(
+        "\n===== BENCHMARK SUMMARY =====\n"
+    )
+
+    print(
         json.dumps(
-            report,
+            {
+                "queries": report[
+                    "queries"
+                ],
+                "candidate_k": report[
+                    "candidate_k"
+                ],
+                "evaluation_unit": report[
+                    "evaluation_unit"
+                ],
+                "systems": report[
+                    "systems"
+                ],
+            },
             indent=2,
         )
     )
 
     print(
-        f"\nBenchmark saved to: {OUTPUT_PATH}"
+        f"\nBenchmark saved to: "
+        f"{OUTPUT_PATH}"
     )

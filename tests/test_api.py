@@ -31,7 +31,7 @@ def test_search_mock(monkeypatch):
     monkeypatch.setattr(
         rag_service,
         "search",
-        lambda query, top_k, candidate_k=None: [
+        lambda query, top_k, candidate_k=None, retrieval_strategy="hybrid": [
             {
                 "chunk_id": "x",
                 "document": "paper.pdf",
@@ -64,10 +64,12 @@ def test_search_fast_mode_uses_candidate_k_5(
         query,
         top_k,
         candidate_k=None,
+        retrieval_strategy="hybrid",
     ):
         captured["query"] = query
         captured["top_k"] = top_k
         captured["candidate_k"] = candidate_k
+        captured["retrieval_strategy"] = retrieval_strategy
 
         return [
             {
@@ -97,6 +99,7 @@ def test_search_fast_mode_uses_candidate_k_5(
 
     assert response.status_code == 200
     assert captured["candidate_k"] == 5
+    assert captured["retrieval_strategy"] == "hybrid"
 
 
 def test_search_quality_mode_uses_candidate_k_20(
@@ -108,10 +111,12 @@ def test_search_quality_mode_uses_candidate_k_20(
         query,
         top_k,
         candidate_k=None,
+        retrieval_strategy="hybrid",
     ):
         captured["query"] = query
         captured["top_k"] = top_k
         captured["candidate_k"] = candidate_k
+        captured["retrieval_strategy"] = retrieval_strategy
 
         return [
             {
@@ -141,6 +146,7 @@ def test_search_quality_mode_uses_candidate_k_20(
 
     assert response.status_code == 200
     assert captured["candidate_k"] == 20
+    assert captured["retrieval_strategy"] == "hybrid"
 
 
 def test_invalid_retrieval_mode_is_rejected():

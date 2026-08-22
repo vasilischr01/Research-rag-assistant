@@ -1,50 +1,134 @@
 [
   {
     "query": "What methods were used to forecast migraine?",
-    "relevant_pages": [4, 5]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 4
+      },
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 5
+      }
+    ]
   },
   {
     "query": "What data sources were used in the migraine forecasting study?",
-    "relevant_pages": [2]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 2
+      }
+    ]
   },
   {
     "query": "What information was recorded in the headache diary?",
-    "relevant_pages": [2]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 2
+      }
+    ]
   },
   {
     "query": "What physiological measurements were collected during the biofeedback sessions?",
-    "relevant_pages": [2]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 2
+      }
+    ]
   },
   {
     "query": "How was the dataset split into training, validation, and test sets?",
-    "relevant_pages": [2, 4]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 2
+      },
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 4
+      }
+    ]
   },
   {
     "query": "Which machine learning model families were evaluated in the study?",
-    "relevant_pages": [4]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 4
+      }
+    ]
   },
   {
     "query": "How did the GRU-D time-series model use previous observations to make forecasts?",
-    "relevant_pages": [4, 7]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 4
+      },
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 7
+      }
+    ]
   },
   {
     "query": "How well did the forecasting models perform?",
-    "relevant_pages": [5, 7]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 5
+      },
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 7
+      }
+    ]
   },
   {
     "query": "Which model performed best for next-day migraine forecasting?",
-    "relevant_pages": [5, 7]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 5
+      },
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 7
+      }
+    ]
   },
   {
     "query": "Which features were most important for the best-performing forecasting model?",
-    "relevant_pages": [5, 8]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 5
+      },
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 8
+      }
+    ]
   },
   {
     "query": "Why is the low sensitivity of the migraine forecasting model clinically important?",
-    "relevant_pages": [7]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 7
+      }
+    ]
   },
   {
     "query": "What limitations did the authors report?",
-    "relevant_pages": [9]
+    "relevant_locations": [
+      {
+        "document": "Forecasting migraine with time-series.pdf",
+        "page": 9
+      }
+    ]
   }
 ]

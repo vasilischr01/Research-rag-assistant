@@ -19,7 +19,7 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(
     title="Research RAG Assistant",
-    version="0.2.0",
+    version="0.3.0",
 )
 
 
@@ -80,6 +80,7 @@ def search(
             query=request.query,
             top_k=request.top_k,
             mode=request.retrieval_mode,
+            retrieval_strategy=request.retrieval_strategy,
         )
 
     except ValueError as exc:
@@ -101,6 +102,7 @@ def ask(
             question=request.question,
             top_k=request.top_k,
             mode=request.retrieval_mode,
+            retrieval_strategy=request.retrieval_strategy,
         )
 
     except ValueError as exc:
@@ -108,6 +110,7 @@ def ask(
             status_code=400,
             detail=str(exc),
         ) from exc
+
 
 @app.post(
     "/compare",
