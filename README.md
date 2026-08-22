@@ -1,10 +1,10 @@
 # Research RAG Assistant
 
-A local-first Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis, semantic search, evidence reranking, citation-aware retrieval, retrieval evaluation, and multi-document comparison.
+A local-first Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis, semantic retrieval, neural reranking, citation-aware question answering, multi-document comparison, and quantitative retrieval evaluation.
 
-The project implements an end-to-end document retrieval pipeline that can ingest research papers, extract and chunk their content, generate semantic embeddings, retrieve relevant evidence with FAISS, rerank candidate passages using a cross-encoder, and expose the workflow through a FastAPI REST API.
+The project implements an end-to-end document retrieval pipeline that can ingest research papers, extract and chunk their content, generate normalized semantic embeddings, retrieve relevant evidence with FAISS, rerank candidate passages using a cross-encoder, and expose the complete workflow through a FastAPI REST API.
 
-The system also includes a dedicated retrieval benchmarking pipeline using **Recall@k**, **Mean Reciprocal Rank (MRR)**, and latency measurements.
+Beyond basic RAG functionality, the project includes retrieval benchmarking, candidate-pool ablation experiments, latency measurements, configurable retrieval modes, automated tests, Docker support, and GitHub Actions CI.
 
 ---
 
@@ -12,22 +12,26 @@ The system also includes a dedicated retrieval benchmarking pipeline using **Rec
 
 Research RAG Assistant is designed to support structured exploration of scientific and technical PDF documents.
 
-Instead of relying on keyword matching, the system represents document chunks as dense semantic embeddings and retrieves evidence according to semantic similarity with the user's query.
+Instead of relying only on keyword matching, the system represents document chunks as dense semantic embeddings and retrieves evidence according to semantic similarity with the user's query.
 
-A second-stage **cross-encoder reranker** evaluates the retrieved candidates more precisely and reorders them before they are returned.
+A second-stage **cross-encoder reranker** then jointly evaluates each query-passage pair and reorders the retrieved candidates before the final results are returned.
 
 The system supports:
 
 - PDF ingestion
-- Page-aware text chunking
+- Page-aware text extraction
+- Overlapping text chunking
 - Semantic document search
 - Dense vector retrieval with FAISS
-- Cross-encoder evidence reranking
+- Cross-encoder neural reranking
 - Citation-aware retrieval
 - Question answering over indexed documents
 - Multi-document comparison
+- Page-level evidence provenance
 - Retrieval quality benchmarking
+- Candidate-pool ablation experiments
 - Latency evaluation
+- Configurable retrieval modes
 - Persistent local vector indexing
 - FastAPI REST API
 - Interactive Swagger/OpenAPI documentation
@@ -35,13 +39,13 @@ The system supports:
 - Docker support
 - GitHub Actions CI
 
-No uploaded research papers are distributed with this repository.
+Uploaded research papers and generated vector indexes are not distributed with the repository.
 
 ---
 
 ## Architecture
 
-The retrieval pipeline is:
+The main retrieval pipeline is:
 
 ```text
 PDF Document
@@ -53,7 +57,7 @@ PDF Text Extraction
 Page-Aware Chunking
      |
      v
-Sentence Transformer Embeddings
+Normalized Sentence-Transformer Embeddings
      |
      v
 FAISS Vector Index
@@ -85,7 +89,7 @@ Citation-Aware Output   Per-Document Evidence
 PDF
  -> extract pages
  -> split pages into overlapping chunks
- -> generate embeddings
+ -> generate normalized embeddings
  -> store embeddings and metadata
 ```
 
@@ -93,11 +97,103 @@ PDF
 
 ```text
 Question
- -> embed query
+ -> generate normalized query embedding
  -> retrieve candidate chunks with FAISS
  -> rerank candidates with CrossEncoder
  -> return highest-ranked evidence
 ```
+
+---
+
+## Retrieval Design
+
+### Dense Retrieval
+
+Document chunks and queries are encoded with a Sentence Transformer using:
+
+```python
+normalize_embeddings=True
+```
+
+The vector index uses:
+
+```text
+FAISS IndexFlatIP
+```
+
+Because both document and query embeddings are L2-normalized, inner-product search is equivalent to **cosine-similarity ranking**.
+
+This provides efficient first-stage semantic retrieval.
+
+### Cross-Encoder Reranking
+
+Dense embedding similarity is efficient, but it does not always provide the best ranking of retrieved passages.
+
+For this reason, the system performs second-stage neural reranking.
+
+```text
+Query
+  |
+  v
+Dense Retrieval
+  |
+  v
+Candidate Pool
+  |
+  v
+Cross-Encoder
+  |
+  v
+Final Top-K Evidence
+```
+
+The cross-encoder jointly evaluates:
+
+```text
+(query, candidate passage)
+```
+
+and assigns an independent relevance score to every candidate.
+
+The current reranker is:
+
+```text
+cross-encoder/ms-marco-MiniLM-L6-v2
+```
+
+The candidates are then reordered according to their reranker scores.
+
+---
+
+## Retrieval Modes
+
+The API exposes three retrieval modes that control the number of dense candidates passed to the cross-encoder.
+
+| Mode | Candidate Pool | Intended Use |
+|---|---:|---|
+| `fast` | 5 | Lowest latency |
+| `balanced` | 10 | Intermediate configuration |
+| `quality` | 20 | Higher retrieval coverage |
+
+The default mode is:
+
+```text
+quality
+```
+
+These modes were selected based on an empirical candidate-pool ablation experiment.
+
+Example:
+
+```json
+{
+  "query": "What methods were used to forecast migraine?",
+  "top_k": 5,
+  "retrieval_mode": "quality"
+}
+```
+
+The same retrieval modes are available through the `/ask` endpoint.
 
 ---
 
@@ -111,8 +207,8 @@ The ingestion pipeline:
 
 1. Stores the uploaded document locally
 2. Extracts text page by page
-3. Splits the document into overlapping chunks
-4. Generates semantic embeddings for every chunk
+3. Splits pages into overlapping chunks
+4. Generates normalized semantic embeddings
 5. Adds embeddings and metadata to the persistent FAISS index
 
 Stored metadata includes:
@@ -124,20 +220,17 @@ Stored metadata includes:
 
 ---
 
-### Semantic Search
+## Semantic Search
 
-The `/search` endpoint performs semantic retrieval over indexed document chunks.
-
-Instead of matching exact keywords, the query is embedded into the same vector space as the document chunks.
-
-The system retrieves a larger candidate pool and subsequently reranks those candidates using a cross-encoder.
+The `/search` endpoint performs dense semantic retrieval followed by cross-encoder reranking.
 
 Example request:
 
 ```json
 {
   "query": "What methods were used to forecast migraine?",
-  "top_k": 5
+  "top_k": 5,
+  "retrieval_mode": "quality"
 }
 ```
 
@@ -154,51 +247,10 @@ Typical result:
 }
 ```
 
-The `score` field represents the first-stage dense retrieval similarity score.
+The fields represent:
 
-The `reranker_score` represents the relevance score assigned by the second-stage cross-encoder.
-
----
-
-## Cross-Encoder Reranking
-
-Dense semantic retrieval is efficient because queries and document chunks are represented as embeddings and compared in vector space.
-
-However, embedding similarity does not always produce the optimal ordering of candidate passages.
-
-For this reason, the project includes a second-stage **cross-encoder reranker**.
-
-```text
-Query
-  |
-  v
-Dense Retrieval
-  |
-  v
-Candidate Chunks
-  |
-  v
-Cross-Encoder
-  |
-  v
-Final Ranked Evidence
-```
-
-The cross-encoder jointly evaluates:
-
-```text
-(query, candidate passage)
-```
-
-and produces a relevance score for each candidate.
-
-The current reranker uses:
-
-```text
-cross-encoder/ms-marco-MiniLM-L6-v2
-```
-
-Candidate passages are reordered according to their cross-encoder relevance scores before the final top-k results are returned.
+- `score`: first-stage dense retrieval similarity
+- `reranker_score`: second-stage cross-encoder relevance score
 
 ---
 
@@ -211,13 +263,12 @@ Example:
 ```json
 {
   "question": "What limitations did the authors report?",
-  "top_k": 5
+  "top_k": 5,
+  "retrieval_mode": "quality"
 }
 ```
 
-The system returns an answer together with supporting evidence.
-
-Example structure:
+Example response:
 
 ```json
 {
@@ -235,24 +286,26 @@ Example structure:
 }
 ```
 
+The retrieval mode controls the candidate pool used before reranking.
+
 When no external LLM is configured, the application remains usable as a retrieval-oriented research assistant based on evidence extracted from indexed documents.
 
-This allows the core retrieval pipeline to operate locally without requiring a paid external API.
+This keeps the core retrieval pipeline local and avoids requiring a paid hosted API.
 
 ---
 
 ## Citations and Evidence Provenance
 
-Retrieved evidence preserves its source metadata.
+Every retrieved chunk preserves its source metadata.
 
-Citation information includes:
+Evidence information includes:
 
 - Document
 - Page
 - Chunk ID
 - Retrieved text
 - Dense retrieval score
-- Reranker score where applicable
+- Cross-encoder reranker score
 
 Human-readable citations can be represented as:
 
@@ -266,7 +319,7 @@ This allows retrieved evidence to be traced back to its original source document
 
 ## Multi-Document Comparison
 
-The `/compare` endpoint allows the same research question to be evaluated across multiple indexed documents.
+The `/compare` endpoint evaluates the same research question across multiple indexed documents.
 
 Example request:
 
@@ -286,9 +339,9 @@ The system:
 1. Performs semantic retrieval
 2. Filters candidate chunks by document
 3. Reranks evidence independently for each document
-4. Returns the strongest evidence for every paper
+4. Returns the strongest evidence from every requested paper
 5. Generates an extractive comparison summary
-6. Identifies frequently shared terms across the selected evidence
+6. Identifies frequently shared terms across selected evidence
 
 Example response structure:
 
@@ -320,7 +373,7 @@ Example response structure:
 }
 ```
 
-This functionality can support:
+Potential use cases include:
 
 - Literature review workflows
 - Methodology comparison
@@ -331,46 +384,48 @@ This functionality can support:
 
 ---
 
-## Retrieval Evaluation
+# Evaluation
+
+## Retrieval Metrics
 
 The project includes a dedicated retrieval evaluation pipeline.
 
-Evaluation focuses on whether relevant source pages appear near the top of the retrieved ranking.
+Evaluation focuses on whether manually annotated relevant source pages appear near the top of the retrieved ranking.
 
 ### Recall@k
 
-Recall@k measures how much of the relevant evidence is retrieved within the first `k` results.
+Recall@k measures the fraction of relevant evidence retrieved within the first `k` results.
 
-Examples:
+The benchmark reports:
 
 ```text
 Recall@3
 Recall@5
 ```
 
-Higher values indicate that relevant evidence is more consistently present near the top of the ranking.
+Higher values indicate better retrieval coverage near the top of the ranking.
 
 ### Mean Reciprocal Rank
 
 Mean Reciprocal Rank measures how early the first relevant result appears.
 
-For one query:
+For an individual query:
 
 ```text
 Reciprocal Rank = 1 / rank_of_first_relevant_result
 ```
 
-MRR is the average reciprocal rank across all evaluation queries.
+MRR is the mean reciprocal rank across all evaluation queries.
 
-An MRR closer to `1.0` indicates that relevant evidence tends to appear near the beginning of the ranking.
+An MRR closer to `1.0` indicates that relevant evidence tends to appear earlier in the ranking.
 
 ---
 
-## Retrieval Benchmark
+## Dense vs Reranked Retrieval Benchmark
 
-Retrieval quality was evaluated on **12 manually curated research questions** with page-level relevance annotations.
+Retrieval quality was evaluated using **12 manually curated research questions** with page-level relevance annotations.
 
-The benchmark compares:
+The experiment compares:
 
 ```text
 Dense FAISS Retrieval
@@ -384,9 +439,9 @@ Dense FAISS Retrieval
 Cross-Encoder Reranking
 ```
 
-The same dense candidate pool is used for reranking, allowing the quality contribution of the second-stage model to be measured directly.
+The same initial dense candidate pool is used for the reranking experiment so that the contribution of the second-stage model can be measured directly.
 
-### Benchmark Results
+### Results
 
 | Retrieval Strategy | Recall@3 | Recall@5 | MRR | Avg. Query Latency |
 |---|---:|---:|---:|---:|
@@ -395,18 +450,21 @@ The same dense candidate pool is used for reranking, allowing the quality contri
 
 Cross-encoder reranking produced:
 
-- **23.3% improvement in MRR**
-- **10.5% improvement in Recall@5**
-- No change in Recall@3
+- **23.3% relative improvement in MRR**
+- **10.5% relative improvement in Recall@5**
+- No observed improvement in Recall@3
 
-The results demonstrate that second-stage reranking substantially improves the ordering of relevant evidence and increases retrieval coverage within the top five results.
+The experiment demonstrates that second-stage reranking improves evidence ordering and top-five retrieval coverage, while introducing additional inference latency.
 
-The improvement comes with higher inference latency, exposing an explicit **retrieval-quality vs latency trade-off**.
+This exposes a measurable **retrieval quality vs latency trade-off**.
 
-### Candidate Pool Ablation
+---
 
-The effect of the number of dense candidates passed to the cross-encoder
-was evaluated using three repeated runs per configuration after model warm-up.
+## Candidate Pool Ablation
+
+A separate ablation experiment evaluated how many dense candidates should be passed to the cross-encoder.
+
+Each candidate-pool configuration was evaluated over the same **12 queries** using **three repeated runs after model warm-up**.
 
 | Candidate Pool | Recall@5 | MRR | Median Total Latency |
 |---:|---:|---:|---:|
@@ -415,69 +473,131 @@ was evaluated using three repeated runs per configuration after model warm-up.
 | 20 | **0.875** | 0.736 | 1245 ms |
 | 40 | 0.833 | 0.715 | 2663 ms |
 
-The ablation reveals a clear quality-latency trade-off:
+### Findings
 
-- A candidate pool of **20** achieved the highest Recall@5.
-- A candidate pool of **5** achieved the highest MRR and lowest latency.
-- Increasing the pool from 20 to 40 increased latency substantially without improving retrieval quality.
-- A candidate pool of 10 was dominated by the smaller pool in this evaluation.
+- `candidate_k = 5` achieved the **lowest latency** and highest measured MRR.
+- `candidate_k = 20` achieved the **highest Recall@5**.
+- Increasing the pool from 20 to 40 substantially increased latency without improving retrieval quality.
+- `candidate_k = 10` did not provide a better operating point than the configurations at 5 or 20 in this evaluation.
 
-These results suggest two useful operating points: a low-latency configuration
-with 5 candidates and a retrieval-quality-oriented configuration with 20 candidates.
+The experiment therefore identifies two useful operating points:
 
-### Evaluation Configuration
+```text
+fast
+candidate_k = 5
+```
+
+for latency-sensitive retrieval, and:
+
+```text
+quality
+candidate_k = 20
+```
+
+for higher retrieval coverage.
+
+The API exposes both configurations directly through retrieval modes.
+
+---
+
+## Evaluation Configuration
+
+### Main Retrieval Benchmark
 
 - Evaluation queries: **12**
-- Dense candidate pool: **20 chunks**
+- Candidate pool: **20 chunks**
 - Metrics:
   - Recall@3
   - Recall@5
   - Mean Reciprocal Rank
 - Dense retrieval:
-  - Sentence-transformer embeddings
+  - Sentence Transformer embeddings
+  - L2-normalized vectors
   - FAISS inner-product search
+  - Cosine-equivalent ranking
 - Reranker:
   - `cross-encoder/ms-marco-MiniLM-L6-v2`
-- Benchmark includes:
+- Measurements:
   - Dense retrieval latency
   - Cross-encoder reranking latency
-  - End-to-end retrieval latency
+  - Total retrieval latency
 
-Evaluation implementation:
+### Candidate-Pool Ablation
+
+Candidate values:
 
 ```text
-src/evaluation/retrieval.py
+5
+10
+20
+40
 ```
 
-Evaluation dataset:
+Runs per configuration:
+
+```text
+3
+```
+
+Model warm-up is performed before timing to reduce one-time initialization effects.
+
+---
+
+## Evaluation Files
+
+Evaluation queries:
 
 ```text
 evaluation/retrieval_eval.json
 ```
 
-Generated benchmark:
+Main benchmark output:
 
 ```text
 evaluation/retrieval_benchmark.json
 ```
 
-Run the benchmark with:
+Candidate-pool ablation output:
+
+```text
+evaluation/candidate_k_ablation.json
+```
+
+Main benchmark implementation:
+
+```text
+src/evaluation/retrieval.py
+```
+
+Ablation implementation:
+
+```text
+src/evaluation/ablation.py
+```
+
+Run the retrieval benchmark:
 
 ```bash
 python -m src.evaluation.retrieval
 ```
 
+Run the candidate-pool ablation:
+
+```bash
+python -m src.evaluation.ablation
+```
+
 ---
 
-## API Endpoints
+# API
 
-### Health Check
+## Health Check
 
 ```http
 GET /health
 ```
 
-Returns the service status and number of indexed chunks.
+Returns service status and current number of indexed chunks.
 
 Example:
 
@@ -490,13 +610,13 @@ Example:
 
 ---
 
-### Upload Document
+## Upload Document
 
 ```http
 POST /documents/upload
 ```
 
-Uploads and indexes a PDF document.
+Uploads and indexes a PDF.
 
 Example response:
 
@@ -509,9 +629,11 @@ Example response:
 }
 ```
 
+Non-PDF uploads are rejected.
+
 ---
 
-### Search
+## Search
 
 ```http
 POST /search
@@ -524,13 +646,22 @@ Example:
 ```json
 {
   "query": "What data sources were used in the study?",
-  "top_k": 5
+  "top_k": 5,
+  "retrieval_mode": "quality"
 }
+```
+
+Supported retrieval modes:
+
+```text
+fast
+balanced
+quality
 ```
 
 ---
 
-### Ask
+## Ask
 
 ```http
 POST /ask
@@ -543,13 +674,14 @@ Example:
 ```json
 {
   "question": "What limitations were reported?",
-  "top_k": 5
+  "top_k": 5,
+  "retrieval_mode": "quality"
 }
 ```
 
 ---
 
-### Compare
+## Compare
 
 ```http
 POST /compare
@@ -574,9 +706,9 @@ Example:
 
 ## Interactive API Documentation
 
-FastAPI automatically provides Swagger/OpenAPI documentation.
+FastAPI automatically exposes Swagger/OpenAPI documentation.
 
-After starting the API, open:
+Start the API and open:
 
 ```text
 http://127.0.0.1:8000/docs
@@ -584,12 +716,14 @@ http://127.0.0.1:8000/docs
 
 The Swagger interface can be used to:
 
-- Upload PDFs
+- Upload PDF documents
 - Run semantic searches
-- Ask questions
+- Select retrieval modes
+- Ask document-grounded questions
 - Compare documents
-- Inspect API schemas
-- Inspect JSON responses
+- Inspect request schemas
+- Inspect response schemas
+- Execute API requests interactively
 
 OpenAPI JSON is available at:
 
@@ -599,16 +733,16 @@ http://127.0.0.1:8000/openapi.json
 
 ---
 
-## Tech Stack
+# Tech Stack
 
-### Backend
+## Backend
 
 - Python 3.11
 - FastAPI
 - Uvicorn
 - Pydantic
 
-### Machine Learning and Retrieval
+## Machine Learning and Retrieval
 
 - Sentence Transformers
 - Transformer-based embeddings
@@ -617,25 +751,26 @@ http://127.0.0.1:8000/openapi.json
 - NumPy
 - PyTorch
 
-### PDF Processing
+## PDF Processing
 
 - PyMuPDF
 
-### Testing
+## Testing
 
 - pytest
 - FastAPI TestClient
 
-### Engineering
+## Engineering
 
 - Docker
 - GitHub Actions
 - Environment-based configuration
 - Persistent local vector index
+- Automated CI testing
 
 ---
 
-## Project Structure
+# Project Structure
 
 ```text
 research-rag-assistant/
@@ -674,6 +809,7 @@ research-rag-assistant/
 |   |
 |   |-- evaluation/
 |   |   |-- __init__.py
+|   |   |-- ablation.py
 |   |   `-- retrieval.py
 |   |
 |   |-- __init__.py
@@ -695,37 +831,37 @@ research-rag-assistant/
 
 ---
 
-## Installation
+# Installation
 
-### 1. Clone the repository
+## 1. Clone the Repository
 
 ```bash
 git clone <repository-url>
 cd research-rag-assistant
 ```
 
-### 2. Create a virtual environment
+## 2. Create a Virtual Environment
 
-Windows:
+### Windows
 
 ```powershell
 py -3.11 -m venv .venv
 ```
 
-Activate it:
+Activate:
 
 ```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-Linux/macOS:
+### Linux/macOS
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install dependencies
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -733,7 +869,7 @@ pip install -r requirements.txt
 
 ---
 
-## Running the API
+# Running the API
 
 Start the FastAPI development server:
 
@@ -755,43 +891,29 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## Running the Retrieval Benchmark
+# Running Tests
 
-Make sure the required documents have already been ingested into the vector store.
-
-Run:
-
-```bash
-python -m src.evaluation.retrieval
-```
-
-The benchmark report is written to:
-
-```text
-evaluation/retrieval_benchmark.json
-```
-
----
-
-## Running Tests
-
-Run the complete test suite with:
+Run the complete test suite:
 
 ```bash
 pytest -q
 ```
 
-Current development result:
+Current test result:
 
 ```text
-8 passed
+11 passed
 ```
 
-The test suite covers core functionality including:
+The test suite covers functionality including:
 
 - API health checks
 - Upload validation
 - Semantic search
+- Retrieval-mode routing
+- Fast retrieval configuration
+- Quality retrieval configuration
+- Invalid retrieval-mode validation
 - Document comparison
 - Comparison response structure
 - Evidence ranking fields
@@ -800,7 +922,47 @@ The test suite covers core functionality including:
 
 ---
 
-## Data and PDFs
+# Continuous Integration
+
+GitHub Actions runs the test suite automatically on:
+
+```text
+push
+pull_request
+```
+
+The CI workflow:
+
+1. Checks out the repository
+2. Configures Python 3.11
+3. Uses pip dependency caching
+4. Upgrades pip
+5. Installs project dependencies
+6. Runs the pytest suite
+
+Workflow:
+
+```text
+.github/workflows/ci.yml
+```
+
+---
+
+# Docker
+
+A Dockerfile is included for containerized execution.
+
+Build the image:
+
+```bash
+docker build -t research-rag-assistant .
+```
+
+Run it according to the environment and port configuration used by the application.
+
+---
+
+# Data and PDFs
 
 Uploaded PDF documents are **not included in this repository**.
 
@@ -813,7 +975,7 @@ data/uploads/
 data/indexes/
 ```
 
-Only `.gitkeep` files are tracked so that the directory structure remains available after cloning.
+Only `.gitkeep` files are tracked so that the required directory structure remains present after cloning.
 
 To use the project, upload your own PDF documents through:
 
@@ -821,13 +983,17 @@ To use the project, upload your own PDF documents through:
 POST /documents/upload
 ```
 
-This keeps user documents and generated indexes local and prevents research papers or private documents from being unintentionally published through Git.
+This keeps user documents and generated retrieval artifacts local and prevents private or copyrighted documents from being unintentionally committed.
 
 ---
 
-## Configuration
+# Configuration
 
-Environment-specific configuration can be stored in a local `.env` file.
+Environment-specific configuration can be stored in a local:
+
+```text
+.env
+```
 
 An example configuration file is provided:
 
@@ -835,13 +1001,13 @@ An example configuration file is provided:
 .env.example
 ```
 
-The real `.env` file is excluded from Git.
+Local environment files are excluded from Git, while `.env.example` remains tracked.
 
 Sensitive credentials and API keys should never be committed to the repository.
 
 ---
 
-## Local-First Design
+# Local-First Design
 
 The core retrieval pipeline operates locally.
 
@@ -856,65 +1022,114 @@ This includes:
 - Multi-document evidence comparison
 - Retrieval evaluation
 - Benchmark generation
+- Candidate-pool ablation
 
-This allows the application to be developed and tested without requiring a paid external LLM API.
+This allows the application to be developed and evaluated without requiring a paid hosted LLM API.
 
 A local or external language model can be added as an optional generation layer without redesigning the retrieval architecture.
 
 ---
 
-## Engineering Decisions
+# Engineering Decisions
 
-### Two-Stage Retrieval
+## Two-Stage Retrieval
 
-The system deliberately separates efficient first-stage dense retrieval from more computationally expensive second-stage reranking.
+The system deliberately separates:
 
-This enables the retrieval pipeline to balance:
+```text
+efficient first-stage dense retrieval
+```
+
+from:
+
+```text
+more computationally expensive second-stage neural reranking
+```
+
+This allows the pipeline to balance:
 
 - Retrieval coverage
 - Ranking quality
 - Computational cost
 - Query latency
 
-The benchmark quantifies this trade-off instead of assuming that reranking is always beneficial without cost.
+The included benchmark quantifies this trade-off instead of assuming that reranking is beneficial without measuring its cost.
 
-### Persistent Vector Index
+---
+
+## Configurable Retrieval Modes
+
+Candidate-pool size is exposed as a user-facing retrieval mode rather than being permanently hardcoded.
+
+This allows the same retrieval system to support different operating requirements:
+
+```text
+fast
+balanced
+quality
+```
+
+The modes are grounded in measured ablation results rather than arbitrary configuration values.
+
+---
+
+## Persistent Vector Index
 
 FAISS embeddings and chunk metadata are persisted locally, allowing indexed documents to remain available between application restarts.
 
-### Page-Level Provenance
+---
 
-Every chunk retains its source document and page information so that retrieved evidence can be traced back to the original PDF.
+## Cosine-Equivalent Dense Search
 
-### Local-First Execution
+Embeddings are generated with L2 normalization.
 
-Core retrieval functionality does not depend on external hosted APIs, making the system easier to reproduce and suitable for private or sensitive document workflows.
+FAISS `IndexFlatIP` therefore ranks normalized query and document vectors equivalently to cosine similarity.
 
 ---
 
-## Limitations
+## Page-Level Provenance
+
+Every chunk retains source document and page metadata.
+
+This allows retrieved evidence to be traced back to the original PDF.
+
+---
+
+## Local-First Execution
+
+Core retrieval functionality does not depend on external hosted APIs.
+
+This improves reproducibility and supports workflows involving private or sensitive documents.
+
+---
+
+# Limitations
 
 The current implementation has several limitations:
 
-- The retrieval benchmark currently contains **12 manually curated evaluation queries**, which provides useful development-level comparison but is not intended to represent a large-scale information retrieval benchmark.
-- Evaluation currently focuses primarily on retrieval quality rather than full end-to-end answer correctness.
+- The benchmark currently contains **12 manually curated evaluation queries** and should be interpreted as a development-level evaluation rather than a large-scale information retrieval benchmark.
+- Evaluation primarily measures retrieval performance rather than complete end-to-end answer correctness.
+- Page-level relevance annotations are used instead of fine-grained chunk-level human judgments.
+- The candidate-pool findings are based on the current evaluation corpus and may not generalize to substantially different document collections.
 - Multi-document summaries are extractive when no LLM is configured.
-- PDF parsing quality depends on the structure and quality of the source PDF.
+- PDF parsing quality depends on source document structure.
 - Scanned image-only PDFs may require OCR.
-- The current vector index is designed primarily for local development rather than distributed large-scale retrieval.
-- Cross-encoder reranking improves ranking quality but introduces significant additional inference latency.
-- The current benchmark uses page-level relevance annotations rather than fine-grained chunk-level human relevance judgments.
+- The current FAISS index is designed primarily for local development rather than distributed large-scale retrieval.
+- Cross-encoder reranking improves retrieval quality but adds inference latency.
+- Latency measurements depend on local hardware and should not be interpreted as universal production performance.
 
 ---
 
-## Future Improvements
+# Future Improvements
 
 Potential extensions include:
 
 - Larger and more diverse retrieval benchmark
-- Candidate-pool size ablation experiments
-- Hybrid lexical and dense retrieval
+- Multi-document retrieval evaluation
+- Chunk-level human relevance annotations
 - BM25 baseline
+- Hybrid lexical + dense retrieval
+- Reciprocal Rank Fusion
 - Query rewriting
 - Metadata filtering
 - Document-level ranking
@@ -928,26 +1143,32 @@ Potential extensions include:
 - Web frontend
 - Streaming answers
 - Docker Compose deployment
-- GPU acceleration where available
+- GPU acceleration
 - Prometheus metrics
 - Retrieval latency monitoring
 - Automated benchmark regression testing
+- Load testing
+- Larger-scale vector-store evaluation
 
 ---
 
-## Why This Project
+# Why This Project
 
 This project explores the engineering components required for a practical Retrieval-Augmented Generation system rather than treating RAG as only an LLM prompting problem.
 
 The implementation focuses on:
 
 - Semantic retrieval
+- Neural reranking
 - Retrieval quality
 - Evidence provenance
-- Neural reranking
 - Quantitative evaluation
+- Ablation experiments
 - Quality-latency trade-offs
+- Configurable inference behavior
 - API design
+- Testing
+- Continuous integration
 - Reproducibility
 - Local-first execution
 - Multi-document research workflows
@@ -963,8 +1184,8 @@ The architecture can serve as a foundation for applications involving:
 
 ---
 
-## License
+# License
 
 This project is licensed under the MIT License.
 
-See the `LICENSE` file for details. 
+See the `LICENSE` file for details.
