@@ -1,10 +1,23 @@
 # Research RAG Assistant
+[![CI](https://github.com/vasilischr01/Research-rag-assistant/actions/workflows/ci.yml/badge.svg)](https://github.com/vasilischr01/Research-rag-assistant/actions/workflows/ci.yml)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-REST%20API-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 A local-first Retrieval-Augmented Generation (RAG) backend for scientific PDF analysis, semantic retrieval, neural reranking, citation-aware question answering, multi-document comparison, and quantitative retrieval evaluation.
 
 The project implements an end-to-end document retrieval pipeline that can ingest research papers, extract and chunk their content, generate normalized semantic embeddings, retrieve relevant evidence with FAISS, rerank candidate passages using a cross-encoder, and expose the complete workflow through a FastAPI REST API.
 
 Beyond basic RAG functionality, the project includes retrieval benchmarking, candidate-pool ablation experiments, latency measurements, configurable retrieval modes, automated tests, Docker support, and GitHub Actions CI.
+
+## Benchmark Highlights
+
+- **+23.3% MRR** with cross-encoder reranking
+- **+10.5% Recall@5** over dense retrieval
+- **0.875 Recall@5** in the quality-oriented configuration
+- **256 ms median latency** in the fast candidate-pool configuration
+- **3 configurable retrieval modes:** `fast`, `balanced`, `quality`
+- **11 automated tests** with GitHub Actions CI
 
 ---
 
