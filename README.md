@@ -403,6 +403,28 @@ The results demonstrate that second-stage reranking substantially improves the o
 
 The improvement comes with higher inference latency, exposing an explicit **retrieval-quality vs latency trade-off**.
 
+### Candidate Pool Ablation
+
+The effect of the number of dense candidates passed to the cross-encoder
+was evaluated using three repeated runs per configuration after model warm-up.
+
+| Candidate Pool | Recall@5 | MRR | Median Total Latency |
+|---:|---:|---:|---:|
+| 5 | 0.792 | **0.788** | **256 ms** |
+| 10 | 0.792 | 0.736 | 502 ms |
+| 20 | **0.875** | 0.736 | 1245 ms |
+| 40 | 0.833 | 0.715 | 2663 ms |
+
+The ablation reveals a clear quality-latency trade-off:
+
+- A candidate pool of **20** achieved the highest Recall@5.
+- A candidate pool of **5** achieved the highest MRR and lowest latency.
+- Increasing the pool from 20 to 40 increased latency substantially without improving retrieval quality.
+- A candidate pool of 10 was dominated by the smaller pool in this evaluation.
+
+These results suggest two useful operating points: a low-latency configuration
+with 5 candidates and a retrieval-quality-oriented configuration with 20 candidates.
+
 ### Evaluation Configuration
 
 - Evaluation queries: **12**
@@ -631,7 +653,8 @@ research-rag-assistant/
 |
 |-- evaluation/
 |   |-- retrieval_eval.json
-|   `-- retrieval_benchmark.json
+|   |-- retrieval_benchmark.json
+|   `-- candidate_k_ablation.json
 |
 |-- src/
 |   |-- api/

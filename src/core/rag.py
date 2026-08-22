@@ -1,7 +1,7 @@
 from pathlib import Path
-
 import re
 from collections import Counter
+
 from src.core.chunking import chunk_pages
 from src.core.config import settings
 from src.core.embeddings import embed_texts
@@ -10,6 +10,14 @@ from src.core.pdf import extract_pdf_pages
 from src.core.reranker import rerank
 from src.core.vector_store import VectorStore
 
+
+RETRIEVAL_MODES = {
+    "fast": 5,
+    "balanced": 10,
+    "quality": 20,
+}
+
+
 class RAGService:
     def __init__(self):
         self.store = VectorStore()
@@ -17,12 +25,38 @@ class RAGService:
 
     def ingest_pdf(self, path: Path):
         pages = extract_pdf_pages(path)
-        chunks = chunk_pages(pages, settings.chunk_size, settings.chunk_overlap)
-        self.store.add(chunks, embed_texts([c.text for c in chunks]))
-        return {"document": path.name, "pages": len(pages), "chunks_added": len(chunks), "index_size": self.store.size}
 
-    def search(self, query, top_k):
-        candidate_k = max(top_k * 4, 20)
+        chunks = chunk_pages(
+            pages,
+            settings.chunk_size,
+            settings.chunk_overlap,
+        )
+
+        self.store.add(
+            chunks,
+            embed_texts([c.text for c in chunks]),
+        )
+
+        return {
+            "document": path.name,
+            "pages": len(pages),
+            "chunks_added": len(chunks),
+            "index_size": self.store.size,
+        }
+
+    def search(
+        self,
+        query: str,
+        top_k: int,
+        candidate_k: int | None = None,
+    ):
+        if candidate_k is None:
+            candidate_k = max(top_k * 4, 20)
+
+        if candidate_k < top_k:
+            raise ValueError(
+                "candidate_k must be greater than or equal to top_k."
+            )
 
         embedding = embed_texts([query])
 
@@ -37,9 +71,48 @@ class RAGService:
             top_k=top_k,
         )
 
-    def ask(self, question, top_k):
-        hits = self.search(question, top_k)
-        return {"answer": generate_answer(question, hits), "citations": hits}
+    def search_with_mode(
+        self,
+        query: str,
+        top_k: int,
+        mode: str = "quality",
+    ):
+        if mode not in RETRIEVAL_MODES:
+            raise ValueError(
+                f"Unknown retrieval mode: {mode}. "
+                f"Choose from {list(RETRIEVAL_MODES)}."
+            )
+
+        candidate_k = max(
+            top_k,
+            RETRIEVAL_MODES[mode],
+        )
+
+        return self.search(
+            query=query,
+            top_k=top_k,
+            candidate_k=candidate_k,
+        )
+
+    def ask(
+        self,
+        question: str,
+        top_k: int,
+        mode: str = "quality",
+    ):
+        hits = self.search_with_mode(
+            query=question,
+            top_k=top_k,
+            mode=mode,
+        )
+
+        return {
+            "answer": generate_answer(
+                question,
+                hits,
+            ),
+            "citations": hits,
+        }
 
     def compare_documents(
         self,
@@ -47,7 +120,10 @@ class RAGService:
         documents: list[str],
         top_k_per_document: int = 3,
     ) -> dict:
-        candidate_k = max(top_k_per_document * 8, 30)
+        candidate_k = max(
+            top_k_per_document * 8,
+            30,
+        )
 
         embedding = embed_texts([question])
 
@@ -70,47 +146,62 @@ class RAGService:
                 results=document_candidates,
                 top_k=top_k_per_document,
             )
+
             formatted = []
 
-            for rank, item in enumerate(ranked, start=1):
+            for rank, item in enumerate(
+                ranked,
+                start=1,
+            ):
                 formatted.append(
                     {
                         "rank": rank,
                         "document": item["document"],
                         "page": item["page"],
                         "chunk_id": item["chunk_id"],
-                        "retrieval_score": round(float(item["score"]), 4),
-                        "reranker_score": round(
-                            float(item["reranker_score"]),
+                        "retrieval_score": round(
+                            float(item["score"]),
                             4,
-                    ),
-                    "citation": (
-                        f'[{item["document"]}, p. {item["page"]}]'
-                    ),
-                    "text": item["text"],
-                }
-            )
+                        ),
+                        "reranker_score": round(
+                            float(
+                                item["reranker_score"]
+                            ),
+                            4,
+                        ),
+                        "citation": (
+                            f'[{item["document"]}, '
+                            f'p. {item["page"]}]'
+                        ),
+                        "text": item["text"],
+                    }
+                )
 
             grouped[document] = formatted
 
-            summary = self._build_comparison_summary(grouped)
+        summary = self._build_comparison_summary(
+            grouped
+        )
 
-            return {
-                "question": question,
-                "documents": [
-                    {
-                        "document": document,
-                        "evidence": grouped.get(document, []),
-                    }
-                    for document in documents
-                ],
-                "summary": summary,
-}
-        
+        return {
+            "question": question,
+            "documents": [
+                {
+                    "document": document,
+                    "evidence": grouped.get(
+                        document,
+                        [],
+                    ),
+                }
+                for document in documents
+            ],
+            "summary": summary,
+        }
+
     def _build_comparison_summary(
         self,
         grouped: dict,
-        ) -> dict:
+    ) -> dict:
         papers = []
         all_words = []
 
@@ -141,7 +232,7 @@ class RAGService:
             "be",
             "it",
             "at",
-    }
+        }
 
         for document, evidence in grouped.items():
             snippets = []
@@ -155,8 +246,13 @@ class RAGService:
                     text,
                 )[0]
 
-                snippets.append(first_sentence)
-                pages.append(item["page"])
+                snippets.append(
+                    first_sentence
+                )
+
+                pages.append(
+                    item["page"]
+                )
 
                 words = re.findall(
                     r"\b[a-zA-Z][a-zA-Z-]{3,}\b",
@@ -173,11 +269,15 @@ class RAGService:
                 {
                     "document": document,
                     "top_evidence": snippets[:3],
-                    "pages": sorted(set(pages)),
+                    "pages": sorted(
+                        set(pages)
+                    ),
                 }
             )
 
-        frequencies = Counter(all_words)
+        frequencies = Counter(
+            all_words
+        )
 
         shared_terms = [
             word
@@ -188,9 +288,11 @@ class RAGService:
             "papers": papers,
             "shared_terms": shared_terms,
             "note": (
-                "Extractive comparison summary generated from "
-                "the highest-ranked evidence chunks; no external LLM used."
+                "Extractive comparison summary generated "
+                "from the highest-ranked evidence chunks; "
+                "no external LLM used."
             ),
         }
-rag_service = RAGService()
 
+
+rag_service = RAGService()

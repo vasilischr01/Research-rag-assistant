@@ -1,14 +1,43 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
+RetrievalMode = Literal[
+    "fast",
+    "balanced",
+    "quality",
+]
+
+
 class SearchRequest(BaseModel):
-    query: str = Field(min_length=2, max_length=2000)
-    top_k: int = Field(default=5, ge=1, le=20)
+    query: str = Field(
+        min_length=2,
+        max_length=2000,
+    )
+
+    top_k: int = Field(
+        default=5,
+        ge=1,
+        le=20,
+    )
+
+    retrieval_mode: RetrievalMode = "quality"
 
 
 class AskRequest(BaseModel):
-    question: str = Field(min_length=2, max_length=4000)
-    top_k: int = Field(default=5, ge=1, le=20)
+    question: str = Field(
+        min_length=2,
+        max_length=4000,
+    )
+
+    top_k: int = Field(
+        default=5,
+        ge=1,
+        le=20,
+    )
+
+    retrieval_mode: RetrievalMode = "quality"
 
 
 class Citation(BaseModel):
@@ -17,6 +46,7 @@ class Citation(BaseModel):
     page: int
     text: str
     score: float
+    reranker_score: float | None = None
 
 
 class AskResponse(BaseModel):
@@ -26,8 +56,14 @@ class AskResponse(BaseModel):
 
 class CompareRequest(BaseModel):
     question: str
+
     documents: list[str]
-    top_k_per_document: int = Field(default=3, ge=1, le=10)
+
+    top_k_per_document: int = Field(
+        default=3,
+        ge=1,
+        le=10,
+    )
 
 
 class CompareDocumentResult(BaseModel):

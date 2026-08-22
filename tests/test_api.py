@@ -14,7 +14,7 @@ def test_upload_rejects_non_pdf():
     assert r.status_code == 400
 
 def test_search_mock(monkeypatch):
-    monkeypatch.setattr(rag_service, "search", lambda query, top_k: [
+    monkeypatch.setattr(rag_service, "search", lambda query, top_k, candidate_k=None: [
         {"chunk_id":"x","document":"paper.pdf","page":1,"text":"evidence","score":0.9}
     ])
     r = client.post("/search", json={"query":"method","top_k":3})
