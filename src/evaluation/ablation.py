@@ -9,7 +9,6 @@ from src.core.embeddings import embed_texts
 from src.core.rag import rag_service
 from src.core.reranker import get_reranker, rerank
 
-
 EVAL_PATH = Path("evaluation/retrieval_eval.json")
 OUTPUT_PATH = Path("evaluation/candidate_k_ablation.json")
 

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+
 from src.core.pdf import PageText
+
 
 @dataclass(frozen=True)
 class Chunk:

@@ -4,7 +4,6 @@ from functools import lru_cache
 
 from sentence_transformers import CrossEncoder
 
-
 RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L6-v2"
 
 

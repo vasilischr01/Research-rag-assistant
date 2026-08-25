@@ -1,9 +1,12 @@
 import json
 from dataclasses import asdict
 from pathlib import Path
+
 import faiss
 import numpy as np
+
 from src.core.chunking import Chunk
+
 
 class VectorStore:
     def __init__(self, index_path=Path("data/indexes/index.faiss"), metadata_path=Path("data/indexes/metadata.json")):

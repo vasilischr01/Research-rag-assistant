@@ -1,6 +1,6 @@
-from pathlib import Path
 import re
 from collections import Counter
+from pathlib import Path
 
 from src.core.bm25 import BM25Retriever
 from src.core.chunking import chunk_pages
@@ -11,7 +11,6 @@ from src.core.hybrid import reciprocal_rank_fusion
 from src.core.pdf import extract_pdf_pages
 from src.core.reranker import rerank
 from src.core.vector_store import VectorStore
-
 
 RETRIEVAL_MODES = {
     "fast": 5,

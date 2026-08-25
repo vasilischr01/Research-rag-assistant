@@ -1,5 +1,7 @@
 import httpx
+
 from src.core.config import settings
+
 
 def extractive_answer(question, results):
     if not results:

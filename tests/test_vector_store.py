@@ -1,6 +1,8 @@
 import numpy as np
+
 from src.core.chunking import Chunk
 from src.core.vector_store import VectorStore
+
 
 def test_vector_store_returns_best_match(tmp_path):
     store = VectorStore(tmp_path / "index.faiss", tmp_path / "metadata.json")

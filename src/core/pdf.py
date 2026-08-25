@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from pathlib import Path
+
 import fitz
+
 
 @dataclass(frozen=True)
 class PageText:

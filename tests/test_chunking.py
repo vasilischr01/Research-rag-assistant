@@ -1,6 +1,8 @@
 import pytest
+
 from src.core.chunking import chunk_pages
 from src.core.pdf import PageText
+
 
 def test_chunking_preserves_metadata():
     chunks = chunk_pages([PageText("paper.pdf", 3, "A" * 120)], 50, 10)

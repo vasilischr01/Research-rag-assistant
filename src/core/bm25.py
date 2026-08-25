@@ -6,7 +6,6 @@ from collections import Counter
 
 from src.core.chunking import Chunk
 
-
 TOKEN_PATTERN = re.compile(
     r"\b[a-zA-Z0-9][a-zA-Z0-9_-]*\b"
 )

@@ -7,7 +7,6 @@ from time import perf_counter
 from src.core.rag import rag_service
 from src.core.reranker import get_reranker, rerank
 
-
 EVAL_PATH = Path("evaluation/retrieval_eval.json")
 OUTPUT_PATH = Path("evaluation/retrieval_benchmark.json")
 
