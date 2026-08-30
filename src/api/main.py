@@ -193,6 +193,16 @@ app = FastAPI(
     version="0.4.0",
 )
 
+@app.get("/")
+def root():
+    return {
+        "name": "Research RAG Assistant",
+        "status": "online",
+        "version": "0.4.0",
+        "documentation": "/docs",
+        "health": "/health",
+    }
+
 app.add_middleware(
     SecurityMiddleware
 )
