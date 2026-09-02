@@ -15,7 +15,7 @@ The default retrieval strategy is **Hybrid RRF**, selected from measured benchma
 
 ## Benchmark Highlights
 
-- **0.8055 MRR** with Hybrid Dense + BM25 + RRF — highest MRR in the current evaluation
+- **0.8056 MRR** with Hybrid Dense + BM25 + RRF — highest MRR in the current evaluation
 - **0.9583 Recall@5** with BM25 — highest top-five retrieval coverage
 - **+34.9% MRR** for Hybrid RRF relative to the dense FAISS baseline
 - **+10.5% Recall@5** for Hybrid RRF relative to the dense baseline
@@ -370,7 +370,7 @@ The benchmark reports:
 |---|---:|---:|---:|---:|
 | **BM25** | **0.8333** | **0.9583** | 0.7500 | **~2.9 ms** |
 | Dense FAISS | 0.7083 | 0.7917 | 0.5972 | ~21.6 ms |
-| **Hybrid RRF** | 0.7917 | 0.8750 | **0.8055** | ~15.9 ms |
+| **Hybrid RRF** | 0.7917 | 0.8750 | **0.8056** | ~15.9 ms |
 | Dense + Cross-Encoder | 0.7083 | 0.8750 | 0.7361 | ~1210 ms |
 | Hybrid + Cross-Encoder | 0.7917 | 0.8750 | 0.7361 | ~1 s |
 
@@ -381,7 +381,7 @@ Latency values are local measurements and are hardware-dependent.
 Hybrid RRF improved MRR from:
 
 ```text
-0.5972 -> 0.8055
+0.5972 -> 0.8056
 ```
 
 approximately:
