@@ -11,31 +11,31 @@
       "mean_recall@3": 0.8333,
       "mean_recall@5": 0.9583,
       "mrr": 0.75,
-      "avg_latency_ms": 2.86
+      "avg_latency_ms": 0.76
     },
     "dense": {
       "mean_recall@3": 0.7083,
       "mean_recall@5": 0.7917,
-      "mrr": 0.5972,
-      "avg_latency_ms": 21.57
+      "mrr": 0.5833,
+      "avg_latency_ms": 6.27
     },
     "hybrid": {
       "mean_recall@3": 0.7917,
       "mean_recall@5": 0.875,
-      "mrr": 0.8055,
-      "avg_latency_ms": 15.88
+      "mrr": 0.8056,
+      "avg_latency_ms": 4.27
     },
     "dense_reranked": {
       "mean_recall@3": 0.7083,
       "mean_recall@5": 0.875,
       "mrr": 0.7361,
-      "avg_latency_ms": 1210.13
+      "avg_latency_ms": 39.73
     },
     "hybrid_reranked": {
       "mean_recall@3": 0.7917,
       "mean_recall@5": 0.875,
       "mrr": 0.7361,
-      "avg_latency_ms": 1004.68
+      "avg_latency_ms": 31.26
     }
   },
   "results": [
@@ -43,11 +43,11 @@
       "query": "What methods were used to forecast migraine?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 4
         },
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 5
         }
       ],
@@ -55,32 +55,32 @@
         "recall@3": 0.0,
         "recall@5": 0.5,
         "reciprocal_rank": 0.25,
-        "latency_ms": 4.18,
+        "latency_ms": 0.91,
         "retrieved": [
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p4:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 11,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p11:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p11:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           }
         ]
       },
@@ -88,32 +88,32 @@
         "recall@3": 0.0,
         "recall@5": 0.5,
         "reciprocal_rank": 0.25,
-        "latency_ms": 72.2,
+        "latency_ms": 4.63,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           }
         ]
       },
@@ -121,32 +121,32 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 0.5,
-        "latency_ms": 12.47,
+        "latency_ms": 4.61,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           }
         ]
       },
@@ -154,76 +154,76 @@
         "recall@3": 0.0,
         "recall@5": 0.0,
         "reciprocal_rank": 0.0,
-        "latency_ms": 1049.34,
+        "latency_ms": 28.92,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           }
         ],
-        "rerank_only_latency_ms": 977.14
+        "rerank_only_latency_ms": 24.29
       },
       "hybrid_reranked": {
         "recall@3": 0.0,
         "recall@5": 0.0,
         "reciprocal_rank": 0.0,
-        "latency_ms": 899.13,
+        "latency_ms": 28.53,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c1"
           }
         ],
-        "rerank_only_latency_ms": 886.66
+        "rerank_only_latency_ms": 23.93
       }
     },
     {
       "query": "What data sources were used in the migraine forecasting study?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 2
         }
       ],
@@ -231,32 +231,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 3.19,
+        "latency_ms": 0.8,
         "retrieved": [
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 2,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p2:c5"
+            "chunk_id": "WNL-2025-206148.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 2,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p2:c4"
+            "chunk_id": "WNL-2025-206148.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           }
         ]
       },
@@ -264,32 +264,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.3333,
-        "latency_ms": 30.68,
+        "latency_ms": 8.43,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p4:c2"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c2"
           }
         ]
       },
@@ -297,32 +297,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.3333,
-        "latency_ms": 12.83,
+        "latency_ms": 4.54,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 2,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p2:c5"
+            "chunk_id": "WNL-2025-206148.pdf:p2:c5"
           }
         ]
       },
@@ -330,76 +330,76 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 1097.93,
+        "latency_ms": 40.76,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           }
         ],
-        "rerank_only_latency_ms": 1067.25
+        "rerank_only_latency_ms": 32.33
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 921.01,
+        "latency_ms": 28.79,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           }
         ],
-        "rerank_only_latency_ms": 908.18
+        "rerank_only_latency_ms": 24.24
       }
     },
     {
       "query": "What information was recorded in the headache diary?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 2
         }
       ],
@@ -407,32 +407,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 2.94,
+        "latency_ms": 0.75,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           }
         ]
       },
@@ -440,32 +440,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 12.3,
+        "latency_ms": 3.64,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 3,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p3:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p3:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c0"
           }
         ]
       },
@@ -473,32 +473,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 13.65,
+        "latency_ms": 4.31,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           }
         ]
       },
@@ -506,76 +506,76 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 971.7,
+        "latency_ms": 37.52,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c3"
           }
         ],
-        "rerank_only_latency_ms": 959.4
+        "rerank_only_latency_ms": 33.88
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 943.64,
+        "latency_ms": 29.14,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c3"
           }
         ],
-        "rerank_only_latency_ms": 929.99
+        "rerank_only_latency_ms": 24.83
       }
     },
     {
       "query": "What physiological measurements were collected during the biofeedback sessions?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 2
         }
       ],
@@ -583,32 +583,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 2.75,
+        "latency_ms": 0.72,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c6"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c3"
           }
         ]
       },
@@ -616,32 +616,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 17.56,
+        "latency_ms": 3.55,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c6"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c3"
           }
         ]
       },
@@ -649,32 +649,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 17.32,
+        "latency_ms": 4.0,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c6"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           }
         ]
       },
@@ -682,80 +682,80 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 984.06,
+        "latency_ms": 38.69,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c6"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c3"
           }
         ],
-        "rerank_only_latency_ms": 966.5
+        "rerank_only_latency_ms": 35.14
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 910.26,
+        "latency_ms": 35.11,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c6"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ],
-        "rerank_only_latency_ms": 892.94
+        "rerank_only_latency_ms": 31.1
       }
     },
     {
       "query": "How was the dataset split into training, validation, and test sets?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 2
         },
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 4
         }
       ],
@@ -763,32 +763,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 2.58,
+        "latency_ms": 0.77,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c7"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p4:c7"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c6"
           }
         ]
       },
@@ -796,32 +796,32 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 1.0,
-        "latency_ms": 12.57,
+        "latency_ms": 7.72,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c6"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c7"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 6,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p6:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p6:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 7,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p7:c2"
+            "chunk_id": "WNL-2025-206148.pdf:p7:c2"
           }
         ]
       },
@@ -829,32 +829,32 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 1.0,
-        "latency_ms": 13.03,
+        "latency_ms": 4.26,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c6"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 6,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p6:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p6:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c4"
           }
         ]
       },
@@ -862,76 +862,76 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1523.57,
+        "latency_ms": 48.86,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c6"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
+            "page": 4,
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c6"
+          },
+          {
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c2"
-          },
-          {
-            "document": "Forecasting migraine with time-series.pdf",
-            "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c2"
           }
         ],
-        "rerank_only_latency_ms": 1511.0
+        "rerank_only_latency_ms": 41.14
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1615.39,
+        "latency_ms": 35.13,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c7"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p4:c7"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c6"
           }
         ],
-        "rerank_only_latency_ms": 1602.36
+        "rerank_only_latency_ms": 30.87
       }
     },
     {
       "query": "Which machine learning model families were evaluated in the study?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 4
         }
       ],
@@ -939,32 +939,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 3.24,
+        "latency_ms": 0.82,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c2"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 2,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p2:c4"
+            "chunk_id": "WNL-2025-206148.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           }
         ]
       },
@@ -972,32 +972,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 15.85,
+        "latency_ms": 7.85,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c1"
           }
         ]
       },
@@ -1005,32 +1005,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 18.64,
+        "latency_ms": 4.21,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
+            "page": 1,
+            "chunk_id": "WNL-2025-206148.pdf:p1:c1"
+          },
+          {
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c2"
-          },
-          {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
-            "page": 1,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p1:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c2"
           }
         ]
       },
@@ -1038,80 +1038,80 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 971.45,
+        "latency_ms": 39.13,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 1,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p1:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p1:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c2"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c2"
           }
         ],
-        "rerank_only_latency_ms": 955.6
+        "rerank_only_latency_ms": 31.29
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 863.15,
+        "latency_ms": 27.89,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 5,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p5:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p5:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 2,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p2:c4"
+            "chunk_id": "WNL-2025-206148.pdf:p2:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 1,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p1:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p1:c1"
           }
         ],
-        "rerank_only_latency_ms": 844.51
+        "rerank_only_latency_ms": 23.68
       }
     },
     {
       "query": "How did the GRU-D time-series model use previous observations to make forecasts?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 4
         },
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 7
         }
       ],
@@ -1119,32 +1119,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 2.98,
+        "latency_ms": 0.71,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ]
       },
@@ -1152,32 +1152,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 16.56,
+        "latency_ms": 7.85,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c4"
           }
         ]
       },
@@ -1185,32 +1185,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 15.0,
+        "latency_ms": 4.3,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           }
         ]
       },
@@ -1218,80 +1218,80 @@
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 0.3333,
-        "latency_ms": 1005.31,
+        "latency_ms": 40.44,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           }
         ],
-        "rerank_only_latency_ms": 988.74
+        "rerank_only_latency_ms": 32.59
       },
       "hybrid_reranked": {
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 0.3333,
-        "latency_ms": 988.14,
+        "latency_ms": 29.14,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           }
         ],
-        "rerank_only_latency_ms": 973.14
+        "rerank_only_latency_ms": 24.85
       }
     },
     {
       "query": "How well did the forecasting models perform?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 5
         },
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 7
         }
       ],
@@ -1299,32 +1299,32 @@
         "recall@3": 0.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.25,
-        "latency_ms": 1.86,
+        "latency_ms": 0.69,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p4:c4"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           }
         ]
       },
@@ -1332,32 +1332,32 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 0.5,
-        "latency_ms": 15.62,
+        "latency_ms": 3.35,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           }
         ]
       },
@@ -1365,32 +1365,32 @@
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 0.3333,
-        "latency_ms": 21.68,
+        "latency_ms": 4.0,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           }
         ]
       },
@@ -1398,80 +1398,80 @@
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 1877.69,
+        "latency_ms": 49.6,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c1"
           }
         ],
-        "rerank_only_latency_ms": 1862.07
+        "rerank_only_latency_ms": 46.26
       },
       "hybrid_reranked": {
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 0.5,
-        "latency_ms": 938.41,
+        "latency_ms": 35.32,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           }
         ],
-        "rerank_only_latency_ms": 916.73
+        "rerank_only_latency_ms": 31.32
       }
     },
     {
       "query": "Which model performed best for next-day migraine forecasting?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 5
         },
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 7
         }
       ],
@@ -1479,32 +1479,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 1.73,
+        "latency_ms": 0.74,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           }
         ]
       },
@@ -1512,32 +1512,32 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 0.3333,
-        "latency_ms": 13.43,
+        "latency_ms": 3.64,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ]
       },
@@ -1545,32 +1545,32 @@
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 17.73,
+        "latency_ms": 4.11,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 2,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p2:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p2:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c0"
           }
         ]
       },
@@ -1578,80 +1578,80 @@
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 1023.74,
+        "latency_ms": 27.43,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ],
-        "rerank_only_latency_ms": 1010.31
+        "rerank_only_latency_ms": 23.79
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 1053.29,
+        "latency_ms": 28.63,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c5"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c5"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c5"
           }
         ],
-        "rerank_only_latency_ms": 1035.56
+        "rerank_only_latency_ms": 24.53
       }
     },
     {
       "query": "Which features were most important for the best-performing forecasting model?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 5
         },
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 8
         }
       ],
@@ -1659,32 +1659,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 3.07,
+        "latency_ms": 0.76,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           }
         ]
       },
@@ -1692,32 +1692,32 @@
         "recall@3": 0.0,
         "recall@5": 0.5,
         "reciprocal_rank": 0.25,
-        "latency_ms": 25.31,
+        "latency_ms": 9.11,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 4,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p4:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p4:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c1"
           }
         ]
       },
@@ -1725,32 +1725,32 @@
         "recall@3": 0.5,
         "recall@5": 0.5,
         "reciprocal_rank": 1.0,
-        "latency_ms": 17.15,
+        "latency_ms": 4.27,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           }
         ]
       },
@@ -1758,76 +1758,76 @@
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1881.33,
+        "latency_ms": 44.39,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ],
-        "rerank_only_latency_ms": 1856.02
+        "rerank_only_latency_ms": 35.28
       },
       "hybrid_reranked": {
         "recall@3": 0.5,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1045.01,
+        "latency_ms": 35.7,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c3"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c3"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ],
-        "rerank_only_latency_ms": 1027.86
+        "rerank_only_latency_ms": 31.43
       }
     },
     {
       "query": "Why is the low sensitivity of the migraine forecasting model clinically important?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 7
         }
       ],
@@ -1835,32 +1835,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 3.54,
+        "latency_ms": 0.78,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 7,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p7:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 8,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p8:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p8:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           }
         ]
       },
@@ -1868,32 +1868,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 16.62,
+        "latency_ms": 7.57,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ]
       },
@@ -1901,32 +1901,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 17.41,
+        "latency_ms": 4.3,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ]
       },
@@ -1934,76 +1934,76 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1101.97,
+        "latency_ms": 41.19,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ],
-        "rerank_only_latency_ms": 1085.34
+        "rerank_only_latency_ms": 33.62
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1151.0,
+        "latency_ms": 30.95,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c1"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c4"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           }
         ],
-        "rerank_only_latency_ms": 1133.58
+        "rerank_only_latency_ms": 26.64
       }
     },
     {
       "query": "What limitations did the authors report?",
       "relevant_locations": [
         {
-          "document": "Forecasting migraine with time-series.pdf",
+          "document": "s10194-026-02346-7.pdf",
           "page": 9
         }
       ],
@@ -2011,65 +2011,65 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 0.5,
-        "latency_ms": 2.3,
+        "latency_ms": 0.7,
         "retrieved": [
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 13,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p13:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p13:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 5,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p5:c4"
+            "chunk_id": "s10194-026-02346-7.pdf:p5:c4"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c3"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c3"
           }
         ]
       },
       "dense": {
         "recall@3": 1.0,
         "recall@5": 1.0,
-        "reciprocal_rank": 0.5,
-        "latency_ms": 10.11,
+        "reciprocal_rank": 0.3333,
+        "latency_ms": 7.86,
         "retrieved": [
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c7"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c7"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "WNL-2025-206148.pdf",
+            "page": 12,
+            "chunk_id": "WNL-2025-206148.pdf:p12:c8"
+          },
+          {
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
-            "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c8"
-          },
-          {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c6"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c6"
           }
         ]
       },
@@ -2077,32 +2077,32 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 13.63,
+        "latency_ms": 4.3,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 4,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p4:c4"
+            "chunk_id": "WNL-2025-206148.pdf:p4:c4"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c7"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c7"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 13,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p13:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p13:c0"
           }
         ]
       },
@@ -2110,69 +2110,69 @@
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 1033.48,
+        "latency_ms": 39.86,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c1"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 7,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p7:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p7:c2"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c5"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c5"
           }
         ],
-        "rerank_only_latency_ms": 1023.36
+        "rerank_only_latency_ms": 32.0
       },
       "hybrid_reranked": {
         "recall@3": 1.0,
         "recall@5": 1.0,
         "reciprocal_rank": 1.0,
-        "latency_ms": 727.76,
+        "latency_ms": 30.84,
         "retrieved": [
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 9,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p9:c2"
+            "chunk_id": "s10194-026-02346-7.pdf:p9:c2"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c1"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c1"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 13,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p13:c0"
+            "chunk_id": "WNL-2025-206148.pdf:p13:c0"
           },
           {
-            "document": "Forecasting migraine with time-series.pdf",
+            "document": "s10194-026-02346-7.pdf",
             "page": 1,
-            "chunk_id": "Forecasting migraine with time-series.pdf:p1:c0"
+            "chunk_id": "s10194-026-02346-7.pdf:p1:c0"
           },
           {
-            "document": "Machine Diagnostics and Machine Phenotyping of migraine.pdf",
+            "document": "WNL-2025-206148.pdf",
             "page": 12,
-            "chunk_id": "Machine Diagnostics and Machine Phenotyping of migraine.pdf:p12:c3"
+            "chunk_id": "WNL-2025-206148.pdf:p12:c3"
           }
         ],
-        "rerank_only_latency_ms": 714.13
+        "rerank_only_latency_ms": 26.54
       }
     }
   ]
